@@ -1,0 +1,76 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>eu.trentorise.smartcampus</groupId>
+  <artifactId>smartcampus.vas.communicator.domain</artifactId>
+  <version>1.0</version>
+  	<packaging>bundle</packaging>
+  
+  	<parent>
+		<groupId>it.sayservice.platform</groupId>
+		<artifactId>domainobj-conf</artifactId>
+		<version>1.2</version>
+	</parent>
+  
+  <dependencies>
+  
+  	<dependency>
+  		<groupId>smartcampus</groupId>
+  		<artifactId>smartcampus.vas.journeyplanner.domain</artifactId>
+  		<version>1.0</version>
+  		<type>bundle</type>
+		<scope>compile</scope>
+  	</dependency>
+
+  	
+		<dependency>
+			<groupId>smartcampus</groupId>
+			<artifactId>sc.app.smartplanner.beans</artifactId>
+			<version>1.0</version>
+			<type>jar</type>
+		</dependency>  	
+  	
+		<dependency>
+			<groupId>smartcampus</groupId>
+			<artifactId>smartcampus.service.unitnnews</artifactId>
+			<version>1.0</version>
+			<type>bundle</type>
+			<scope>compile</scope>
+		</dependency>
+  </dependencies>
+  
+  
+  <build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Export-Package>smartcampus.services.communicator.*,</Export-Package>
+						<Import-Package>!it.sayservice.platform.compiler.*,*</Import-Package>
+						<Embed-Dependency>sc.app.smartplanner.beans*;inline=true</Embed-Dependency>
+					</instructions>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>it.sayservice.platform</groupId>
+				<artifactId>do-compiler-plugin</artifactId>
+				<configuration>
+					<destination>${project.basedir}/src/main/java</destination>
+					<domainSpec>${project.basedir}/src/main/resources/domain.dol</domainSpec>
+					<generateSpringConf>true</generateSpringConf>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>dobuild</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+  
+</project>
