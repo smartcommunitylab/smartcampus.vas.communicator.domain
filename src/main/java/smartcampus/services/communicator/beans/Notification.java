@@ -10,12 +10,12 @@ public class Notification {
 	public long timestamp;
 	public String funnelId;
 	public boolean starred;		
-	public List<String> labels;
-	// referenced entities;
+	public List<String> labelIds;
+	private List<EntityObject> entities;
 	
 	public Notification() {
 		timestamp = System.currentTimeMillis();
-		labels = new ArrayList<String>();
+		labelIds = new ArrayList<String>();
 	}
 
 	public String getTitle() {
@@ -58,14 +58,20 @@ public class Notification {
 		this.starred = starred;
 	}
 
-	public List<String> getLabels() {
-		return labels;
+	public List<String> getLabelIds() {
+		return labelIds;
 	}
 
-	public void setLabels(List<String> labels) {
-		this.labels = labels;
+	public void setLabelIds(List<String> labelIds) {
+		this.labelIds = labelIds;
 	}
-	
-	
+
+	public List<EntityObject> getEntities() {
+		return entities;
+	}
+
+	public void setEntities(List<EntityObject> entities) {
+		this.entities = entities;
+	}
 	
 }
