@@ -1,39 +1,54 @@
 package smartcampus.services.communicator.beans;
 
-import java.util.Map;
 
 public class ActionDescriptor {
 
-	private String actionId;
-	private String actionName;
-	private Map<String, Object> actionData;
+	private String label;
+	private int type;
+	private String value;
+
 	
-	public ActionDescriptor(String actionId, String actionName, Map<String, Object> actionData) {
-		this.actionId = actionId;
-		this.actionName = actionName;
-		this.actionData = actionData;
+	public ActionDescriptor() {
+		super();
 	}
-	
-	public String getActionId() {
-		return actionId;
+
+
+	public ActionDescriptor(String label, int type, String value) {
+		super();
+		this.label = label;
+		this.type = type;
+		this.value = value;
 	}
-	public void setActionId(String actionId) {
-		this.actionId = actionId;
+
+
+	public String getLabel() {
+		return label;
 	}
-	public String getActionName() {
-		return actionName;
+
+
+	public void setLabel(String label) {
+		this.label = label;
 	}
-	public void setActionName(String actionName) {
-		this.actionName = actionName;
+
+
+	public int getType() {
+		return type;
 	}
-	public Map<String, Object> getActionData() {
-		return actionData;
+
+
+	public void setType(int type) {
+		this.type = type;
 	}
-	public void setActionData(Map<String, Object> actionData) {
-		this.actionData = actionData;
+
+
+	public String getValue() {
+		return value;
 	}
-	
-	
+
+
+	public void setValue(String value) {
+		this.value = value;
+	}
 	
 }
 
