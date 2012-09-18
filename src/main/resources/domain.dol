@@ -28,7 +28,7 @@ import smartcampus.service.unitnnews.data.message.Unitnnews;
 
 import java.util.Map;
 
-DomainObject AbstractFunnelFactory {
+DomainType AbstractFunnelFactory {
 	public var sourceType : String;
 
     operation createFunnel(id:String,userId:String,userSocialId:String,title:String,labels:String[],actions:ActionDescriptor[],funnelData:String);
