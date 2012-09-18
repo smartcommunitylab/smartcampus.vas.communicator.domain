@@ -1,12 +1,13 @@
 package smartcampus.services.communicator.beans;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
 public class UnitnNewsParameters {
 
-	private String source;
+	private List<String> sources;
 	private List<String> keywords;
 	
 	public static UnitnNewsParameters fromJSON(String json) {
@@ -19,13 +20,28 @@ public class UnitnNewsParameters {
 			return null;
 		}
 	}
+	
+	public static String toJSON(UnitnNewsParameters parameters) {
+		try {
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.writeValueAsString(parameters);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public UnitnNewsParameters() {
+		sources = new ArrayList<String>();
+		keywords = new ArrayList<String>();
+	}	
 
-	public String getSource() {
-		return source;
+	public List<String> getSources() {
+		return sources;
 	}
 
-	public void setSource(String source) {
-		this.source = source;
+	public void setSources(List<String> source) {
+		this.sources = source;
 	}
 
 	public List<String> getKeywords() {

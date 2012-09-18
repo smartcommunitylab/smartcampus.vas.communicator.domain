@@ -28,17 +28,17 @@ public class JourneyPlannerHelper {
 	public static Notification[] buildNotification(Alert alert, String funnelId, JourneyPlannerParameters pars) {
 		List<Notification> result = new ArrayList<Notification>();
 
-		if (pars.getSource() != null && !pars.getSource().equals(alert.getCreatorType().toString())) {
+		if (pars.getSources() != null && !pars.getSources().contains(alert.getCreatorType().toString())) {
 				return (Notification[]) result.toArray();
 		}
 
-		if (alert instanceof AlertDelay && pars.isDelays()) {
+		if (alert instanceof AlertDelay && pars.getTypes().contains(JourneyPlannerParameters.DELAYS)) {
 			Notification not = buildNotification(alert, funnelId, "Delay");
 			result.add(not);
-		} else if (alert instanceof AlertStrike && pars.isStrikes()) {
+		} else if (alert instanceof AlertStrike && pars.getTypes().contains(JourneyPlannerParameters.STRIKES)) {
 			Notification not = buildNotification(alert, funnelId, "Strike");
 			result.add(not);
-		} else if (alert instanceof AlertParking && pars.isParkings()) {
+		} else if (alert instanceof AlertParking && pars.getTypes().contains(JourneyPlannerParameters.PARKINGS)) {
 			Notification not = buildNotification(alert, funnelId, "Parking");
 			result.add(not);
 		}

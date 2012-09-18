@@ -1,18 +1,23 @@
 package smartcampus.services.communicator.beans;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 public class JourneyPlannerParameters {
 
-	private boolean delays;
-	private boolean strikes;
-	private boolean parkings;
+	public static final String DELAYS = "delays";
+	public static final String STRIKES = "strikes";
+	public static final String PARKINGS = "parkings";
 	
-	private String source;
+//	private boolean delays;
+//	private boolean strikes;
+//	private boolean parkings;
+	
+	private List<String> types;
+	
+	private List<String> sources;
 	
 	public static JourneyPlannerParameters fromJSON(String json) {
 		try {
@@ -24,38 +29,39 @@ public class JourneyPlannerParameters {
 			return null;
 		}
 	}
-
-	public boolean isDelays() {
-		return delays;
+	
+	public static String toJSON(JourneyPlannerParameters parameters) {
+		try {
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.writeValueAsString(parameters);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}	
+	
+	public JourneyPlannerParameters() {
+		types = new ArrayList<String>();
+		sources = new ArrayList<String>();
 	}
 
-	public void setDelays(boolean delays) {
-		this.delays = delays;
+	public List<String> getTypes() {
+		return types;
 	}
 
-	public boolean isStrikes() {
-		return strikes;
+	public void setTypes(List<String> types) {
+		this.types = types;
 	}
 
-	public void setStrikes(boolean strikes) {
-		this.strikes = strikes;
+	public List<String> getSources() {
+		return sources;
 	}
 
-	public boolean isParkings() {
-		return parkings;
+	public void setSources(List<String> sources) {
+		this.sources = sources;
 	}
 
-	public void setParkings(boolean parkings) {
-		this.parkings = parkings;
-	}
-
-	public String getSource() {
-		return source;
-	}
-
-	public void setSource(String source) {
-		this.source = source;
-	}
+	
 	
 	
 }

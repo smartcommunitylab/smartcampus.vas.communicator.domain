@@ -1,8 +1,10 @@
 package smartcampus.services.communicator.beans;
 
+import java.io.Serializable;
+
 import smartcampus.service.unitnnews.data.message.Unitnnews.NewsEntry;
 
-public class UnitnNews {
+public class UnitnNews implements Serializable {
 
 	private String title;
 	private String content;
