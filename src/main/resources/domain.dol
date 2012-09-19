@@ -75,7 +75,7 @@ DomainObject JourneyPlannerFunnelFactory implements AbstractFunnelFactory {
 	}
 	
    action createDefaultFunnel(userId:String,userSocialId:String) {
-		create JourneyPlannerFunnel(id:userId + "_" + System.currentTimeMillis(),userId:userId,userSocialId:userSocialId);
+		create JourneyPlannerFunnel(id:userId + "_" + System.currentTimeMillis(),userId:userId,userSocialId:userSocialId,title:"Journey Planner");
 	}		
 }
 
@@ -130,7 +130,7 @@ DomainObject UnitnFunnelFactory implements AbstractFunnelFactory {
 	}
 	
    action createDefaultFunnel(userId:String,userSocialId:String) {
-		create UnitnFunnel(id:userId + "_" + System.currentTimeMillis(),userId:userId,userSocialId:userSocialId);
+		create UnitnFunnel(id:userId + "_" + System.currentTimeMillis(),userId:userId,userSocialId:userSocialId,title:"Unitn News");
 	}		
 	
 	
@@ -154,7 +154,7 @@ DomainType UnitnFunnel implements AbstractFunnel {
 
     action notifyNews(news:UnitnNews[]) {
     	notifications : Notification[] = UnitnNewsHelper.buildNotification(news,id,parameters,newsIds);
-    	set newsIds = UnitnNewsHelper.updateIds(newsIds, notifications);
+    	set newsIds = UnitnNewsHelper.updateIds(newsIds, news);
 		publish update(userId,notifications);
     }
     

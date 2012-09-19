@@ -1,6 +1,7 @@
 package smartcampus.services.communicator.helpers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import smartcampus.services.communicator.beans.JourneyPlannerParameters;
@@ -12,24 +13,12 @@ import smartcampus.smartplanner.data.message.alerts.AlertStrike;
 
 public class JourneyPlannerHelper {
 
-	// public static String[] buildAlertIds(String ids[], Alert alert) {
-	// List<String> idsList = Arrays.asList(ids);
-	// if (!idsList.contains(alert.getId())) {
-	// idsList.add(alert.getId());
-	// return (String[])idsList.toArray();
-	// }
-	// return null;
-	// }
-
-	// public static String buildDelayDescription(Alert alert) {
-	// return alert.getNote();
-	// }
-
 	public static Notification[] buildNotification(Alert alert, String funnelId, JourneyPlannerParameters pars) {
 		List<Notification> result = new ArrayList<Notification>();
 
-		if (pars.getSources() != null && !pars.getSources().contains(alert.getCreatorType().toString())) {
-				return (Notification[]) result.toArray();
+		if (pars.getSources() != null && pars.getSources().size() != 0 && !pars.getSources().contains(alert.getCreatorType().toString())) {
+			
+				return (Notification[]) result.toArray(new Notification[result.size()]);
 		}
 
 		if (alert instanceof AlertDelay && pars.getTypes().contains(JourneyPlannerParameters.DELAYS)) {
@@ -42,7 +31,7 @@ public class JourneyPlannerHelper {
 			Notification not = buildNotification(alert, funnelId, "Parking");
 			result.add(not);
 		}
-		return (Notification[]) result.toArray();
+		return (Notification[]) result.toArray(new Notification[result.size()]);
 	}
 
 	private static Notification buildNotification(Alert alert, String funnelId, String title) {

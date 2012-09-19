@@ -30,10 +30,10 @@ public class UnitnNewsHelper {
 				continue;
 			}
 
-			if (pars.getSources() == null || pars.getSources().contains(un.getSource())) {
+			if (pars.getSources() == null || pars.getSources().size() == 0 || pars.getSources().contains(un.getSource())) {
 				String content = un.getContent().toLowerCase();
 				boolean found = false;
-				if (pars.getKeywords() != null) {
+				if (pars.getKeywords() != null && pars.getKeywords().size() != 0) {
 					for (String keyword : pars.getKeywords()) {
 						String k = keyword.toLowerCase();
 						if (title.contains(k) || content.contains(k)) {
@@ -51,11 +51,44 @@ public class UnitnNewsHelper {
 			}
 		}
 
-		return (Notification[]) result.toArray();
+		Notification res[] = result.toArray(new Notification[result.size()]);
+		return res;
 	}
 	
-	public static String[] updateIds(String oldIds[], Notification notifications[]) {
-		return oldIds;
+	public static String[] updateIds(String oldIds[], UnitnNews news[]) {
+		List<String> nid = new ArrayList<String>();
+		for (UnitnNews n: news) {
+			nid.add(buildId(n));
+		}
+		
+		if (oldIds == null) {
+			return nid.toArray(new String[nid.size()]);
+		}
+		List<String> oid = Arrays.asList(oldIds);
+
+		
+		List<String> toAdd = new ArrayList<String>();
+		List<String> toDelete = new ArrayList<String>();
+		
+		for (String n: nid) {
+			if (!oid.contains(n)) {
+				toAdd.add(n);
+			}
+		}
+		
+		for (String o: oid) {
+			if (!nid.contains(o)) {
+				toDelete.add(o);
+			}
+		}
+			
+		System.out.println("TD: " + toDelete);
+		System.out.println("TA: " + toAdd);
+		
+			oid.removeAll(toDelete);
+			oid.addAll(toAdd);
+			
+			return (String[])oid.toArray(new String[oid.size()]);
 	}
 	
 	private static String buildId(UnitnNews news) {

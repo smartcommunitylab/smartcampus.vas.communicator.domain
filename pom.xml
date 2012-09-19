@@ -1,37 +1,62 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>eu.trentorise.smartcampus</groupId>
-  <artifactId>smartcampus.vas.communicator.domain</artifactId>
-  <version>1.0</version>
-  	<packaging>bundle</packaging>
-  
-  	<parent>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>eu.trentorise.smartcampus</groupId>
+	<artifactId>smartcampus.vas.communicator.domain</artifactId>
+	<version>1.0</version>
+	<packaging>bundle</packaging>
+
+	<parent>
 		<groupId>it.sayservice.platform</groupId>
 		<artifactId>domainobj-conf</artifactId>
 		<version>1.2</version>
 	</parent>
-  
-  <dependencies>
-  
-  	<dependency>
-  		<groupId>smartcampus</groupId>
-  		<artifactId>smartcampus.vas.journeyplanner.domain</artifactId>
-  		<version>1.0</version>
-  		<type>bundle</type>
-		<scope>compile</scope>
-  	</dependency>
 
-  	
+	<dependencies>
+
+		<dependency>
+			<groupId>smartcampus</groupId>
+			<artifactId>smartcampus.vas.journeyplanner.domain</artifactId>
+			<version>1.0</version>
+			<type>bundle</type>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>it.sayservice.platform</groupId>
+			<artifactId>service-engine-client</artifactId>
+			<version>${service-engine-client}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hornetq</groupId>
+			<artifactId>hornetq-core-client</artifactId>
+			<version>2.2.5.Final</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hornetq</groupId>
+			<artifactId>hornetq-jms-client</artifactId>
+			<version>2.2.5.Final</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.netty</groupId>
+			<artifactId>netty</artifactId>
+			<version>3.2.7.Final</version>
+			<scope>test</scope>
+		</dependency>
+
+
 		<dependency>
 			<groupId>smartcampus</groupId>
 			<artifactId>sc.app.smartplanner.beans</artifactId>
 			<version>1.0</version>
 			<type>jar</type>
-		</dependency>  	
-  </dependencies>
-  
-  
-  <build>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+
+
+	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
@@ -41,7 +66,6 @@
 					<instructions>
 						<Export-Package>smartcampus.services.communicator.*,</Export-Package>
 						<Import-Package>!it.sayservice.platform.compiler.*,*</Import-Package>
-						<Embed-Dependency>sc.app.smartplanner.beans*;inline=true</Embed-Dependency>
 					</instructions>
 				</configuration>
 			</plugin>
@@ -64,5 +88,5 @@
 			</plugin>
 		</plugins>
 	</build>
-  
+
 </project>
