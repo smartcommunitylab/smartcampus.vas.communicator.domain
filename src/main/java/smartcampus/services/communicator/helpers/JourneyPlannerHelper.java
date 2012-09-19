@@ -16,20 +16,29 @@ public class JourneyPlannerHelper {
 	public static Notification[] buildNotification(Alert alert, String funnelId, JourneyPlannerParameters pars) {
 		List<Notification> result = new ArrayList<Notification>();
 
-		if (pars.getSources() != null && pars.getSources().size() != 0 && !pars.getSources().contains(alert.getCreatorType().toString())) {
-			
+		boolean all = true;
+		if (pars.getSources() != null && pars.getSources().size() != 0) {
+			all = false;
+			if (!pars.getSources().contains(alert.getCreatorType().toString())) {
 				return (Notification[]) result.toArray(new Notification[result.size()]);
+			}
 		}
 
-		if (alert instanceof AlertDelay && pars.getTypes().contains(JourneyPlannerParameters.DELAYS)) {
-			Notification not = buildNotification(alert, funnelId, "Delay");
-			result.add(not);
-		} else if (alert instanceof AlertStrike && pars.getTypes().contains(JourneyPlannerParameters.STRIKES)) {
-			Notification not = buildNotification(alert, funnelId, "Strike");
-			result.add(not);
-		} else if (alert instanceof AlertParking && pars.getTypes().contains(JourneyPlannerParameters.PARKINGS)) {
-			Notification not = buildNotification(alert, funnelId, "Parking");
-			result.add(not);
+		if (alert instanceof AlertDelay) {
+			if (pars.getTypes().contains(JourneyPlannerParameters.DELAYS) || all) {
+				Notification not = buildNotification(alert, funnelId, "Delay");
+				result.add(not);
+			}
+		} else if (alert instanceof AlertStrike) {
+			if (pars.getTypes().contains(JourneyPlannerParameters.STRIKES) || all) {
+				Notification not = buildNotification(alert, funnelId, "Strike");
+				result.add(not);
+			}
+		} else if (alert instanceof AlertParking) {
+			if (pars.getTypes().contains(JourneyPlannerParameters.PARKINGS) || all) {
+				Notification not = buildNotification(alert, funnelId, "Parking");
+				result.add(not);
+			}
 		}
 		return (Notification[]) result.toArray(new Notification[result.size()]);
 	}
