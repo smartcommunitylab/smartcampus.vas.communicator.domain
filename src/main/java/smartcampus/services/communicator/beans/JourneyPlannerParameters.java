@@ -20,13 +20,16 @@ public class JourneyPlannerParameters {
 	private List<String> sources;
 	
 	public static JourneyPlannerParameters fromJSON(String json) {
+		if (json == null || json.length() == 0) {
+			return new JourneyPlannerParameters();
+		}
 		try {
 		ObjectMapper mapper = new ObjectMapper();
 		JourneyPlannerParameters pars = mapper.readValue(json, JourneyPlannerParameters.class);
 		return pars;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return null;
+			return new JourneyPlannerParameters();
 		}
 	}
 	

@@ -75,7 +75,7 @@ DomainObject JourneyPlannerFunnelFactory implements AbstractFunnelFactory {
 	}
 	
    action createDefaultFunnel(userId:String,userSocialId:String) {
-		create JourneyPlannerFunnel(id:userId + "_" + System.currentTimeMillis(),userId:userId,userSocialId:userSocialId,title:"Journey Planner");
+		create JourneyPlannerFunnel(id:userId + "_" + System.currentTimeMillis(),userId:userId,userSocialId:userSocialId,title:"Journey Planner",parameters:JourneyPlannerParameters.fromJSON(""));
 	}		
 }
 
@@ -93,8 +93,8 @@ DomainType JourneyPlannerFunnel implements AbstractFunnel {
 	@Local(actionName="delete")
     operation delete();  
       
-    action notifyAlert(alert:Alert,userId:String) {
-		notifications : Notification[] = JourneyPlannerHelper.buildNotification(alert,id,parameters);
+    action notifyAlert(alert:Alert,userId:String,clientId:String) {
+		notifications : Notification[] = JourneyPlannerHelper.buildNotification(alert,id,parameters,clientId);
 		publish update(userId,notifications);
     }
     
@@ -107,9 +107,9 @@ DomainType JourneyPlannerFunnel implements AbstractFunnel {
     
     action delete() => terminate;
     
-	subscribe ItineraryObject!alertDelay() if (this.userId == userId) => notifyAlert(alert,userId);
-	subscribe ItineraryObject!alertStrike()  if (this.userId == userId) =>  notifyAlert(alert,userId);
-	subscribe ItineraryObject!alertParking() if (this.userId == userId) =>  notifyAlert(alert,userId);	
+	subscribe ItineraryObject!alertDelay() if (this.userId == userId) => notifyAlert(alert,userId,clientId);
+	subscribe ItineraryObject!alertStrike()  if (this.userId == userId) =>  notifyAlert(alert,userId,clientId);
+	subscribe ItineraryObject!alertParking() if (this.userId == userId) =>  notifyAlert(alert,userId,clientId);	
 	
 }
 
@@ -130,7 +130,7 @@ DomainObject UnitnFunnelFactory implements AbstractFunnelFactory {
 	}
 	
    action createDefaultFunnel(userId:String,userSocialId:String) {
-		create UnitnFunnel(id:userId + "_" + System.currentTimeMillis(),userId:userId,userSocialId:userSocialId,title:"Unitn News");
+		create UnitnFunnel(id:userId + "_" + System.currentTimeMillis(),userId:userId,userSocialId:userSocialId,title:"Unitn News",parameters:UnitnNewsParameters.fromJSON(""));
 	}		
 	
 	

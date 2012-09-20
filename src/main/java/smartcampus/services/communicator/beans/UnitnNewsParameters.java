@@ -11,13 +11,16 @@ public class UnitnNewsParameters {
 	private List<String> keywords;
 	
 	public static UnitnNewsParameters fromJSON(String json) {
+		if (json == null || json.length() == 0) {
+			return new UnitnNewsParameters();
+		}
 		try {
 		ObjectMapper mapper = new ObjectMapper();
 		UnitnNewsParameters pars = mapper.readValue(json, UnitnNewsParameters.class);
 		return pars;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return null;
+			return new UnitnNewsParameters();
 		}
 	}
 	
