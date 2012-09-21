@@ -64,7 +64,7 @@ public class UnitnNewsHelper {
 		if (oldIds == null) {
 			return nid.toArray(new String[nid.size()]);
 		}
-		List<String> oid = Arrays.asList(oldIds);
+		List<String> oid = new ArrayList<String>(Arrays.asList(oldIds));
 
 		
 		List<String> toAdd = new ArrayList<String>();

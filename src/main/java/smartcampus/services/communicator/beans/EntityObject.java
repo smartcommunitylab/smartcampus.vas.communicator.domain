@@ -7,6 +7,7 @@ public class EntityObject {
 	private String id;
 	private Map<String, Object> data;
 	private String title;
+	private Long entityId;
 
 	public String getType() {
 		return type;
@@ -38,5 +39,13 @@ public class EntityObject {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public Long getEntityId() {
+		return entityId;
+	}
+
+	public void setEntityId(Long entityId) {
+		this.entityId = entityId;
 	}
 }

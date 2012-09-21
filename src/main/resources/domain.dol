@@ -16,10 +16,13 @@ import smartcampus.services.communicator.beans.ActionDescriptor;
 import smartcampus.services.communicator.beans.Notification;
 import smartcampus.services.communicator.beans.JourneyPlannerParameters;
 import smartcampus.services.communicator.beans.UnitnNewsParameters;
+import smartcampus.services.communicator.beans.SocialParameters;
 import smartcampus.services.communicator.beans.UnitnNews;
+import smartcampus.services.communicator.beans.SocialNews;
 
 import smartcampus.services.communicator.helpers.JourneyPlannerHelper;
 import smartcampus.services.communicator.helpers.UnitnNewsHelper;
+import smartcampus.services.communicator.helpers.SocialHelper;
 
 
 import smartcampus.services.journeyplanner.*;
@@ -204,5 +207,83 @@ DomainObject GetNews {
         invoke subscribeUnitnNews("http://www.unisport.tn.it","","Unisport");               
     }
 }
+
+// SOCIAL
+
+DomainObject SocialFunnelFactory implements AbstractFunnelFactory {
+	public var sourceType : String = "Social";
+
+	@Local(actionName="createFunnel")
+    operation createFunnel(id:String,userId:String,userSocialId:String,title:String,labels:String[],actions:ActionDescriptor[],funnelData:String);
+    
+	@Local(actionName="createDefaultFunnel")
+    operation createDefaultFunnel(userId:String,userSocialId:String);    
+    
+   action createFunnel(id:String,userId:String,userSocialId:String,title:String,labels:String[],actions:ActionDescriptor[],funnelData:String) {
+   		pars : SocialParameters = SocialParameters.fromJSON(funnelData);
+		create SocialFunnel(id:id,userId:userId,userSocialId:userSocialId,title:title,labels:labels,actions:actions,parameters:pars);
+	}
+	
+   action createDefaultFunnel(userId:String,userSocialId:String) {
+		create SocialFunnel(id:userId + "_" + System.currentTimeMillis(),userId:userId,userSocialId:userSocialId,title:"Social",parameters:SocialParameters.fromJSON(""));
+	}		
+	
+	
+}
+
+DomainType SocialFunnel implements AbstractFunnel {
+
+	private var parameters : SocialParameters;
+	
+	public var sourceType : String = "Social";
+	
+	public inferred var funnelData : String = SocialParameters.toJSON(parameters);
+	
+	private var socialIds : String[];
+	
+	@Subscription(serviceId="eu.trentorise.smartcampus.services.social.SocialService", methodName="GetTopicNews")
+	operation subscribeSocial(actorId:String);	
+	
+    @Service(serviceId="eu.trentorise.smartcampus.services.social.SocialService", methodName="GetTopicNews", converter="smartcampus.services.communicator.helpers.SocialDataConverter")
+    operation getSocial(actorId:String) returns SocialNews[];	   	
+	
+	@Local(actionName="update")
+    operation update(title:String,labels:String[],actions:ActionDescriptor[],funnelData:String);	
+	
+	@Local(actionName="delete")
+    operation delete();  
+    
+    subscribe SocialNewsService!updateSocial(socialId = socialId) => notifySocial(data);
+
+    action notifySocial(news:SocialNews[]) {
+    	notifications : Notification[] = SocialHelper.buildNotification(news,id,parameters,socialIds);
+    	set socialIds = SocialHelper.updateIds(socialIds, news);
+		publish update(userId,notifications);
+    }
+    
+    action update(title:String,labels:String[],actions:ActionDescriptor[],funnelData:String) {
+    	set title = title;
+    	set labels = labels;
+    	set actions = actions;
+    	set parameters = SocialParameters.fromJSON(funnelData);
+    }    
+    
+    action delete() => terminate;    
+
+	action initialize() {
+		socialId : String = "" + userSocialId;
+		invoke data:getSocial(socialId) => notifySocial(data);
+		invoke subscribeSocial(socialId);
+	}
+}
+
+DomainObject SocialNewsService {
+
+	@ServiceNotification(serviceId="eu.trentorise.smartcampus.services.social.SocialService", methodName="GetTopicNews", converter="smartcampus.services.communicator.helpers.SocialNewsConverter")
+	port updateSocial(data:SocialNews[],socialId:Long);		
+}
+
+
+
 
 
