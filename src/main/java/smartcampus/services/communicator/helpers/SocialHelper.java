@@ -6,6 +6,7 @@ import java.util.List;
 
 import smartcampus.services.communicator.beans.EntityObject;
 import smartcampus.services.communicator.beans.Notification;
+import smartcampus.services.communicator.beans.NotificationAuthor;
 import smartcampus.services.communicator.beans.SocialNews;
 import smartcampus.services.communicator.beans.SocialParameters;
 import smartcampus.services.communicator.beans.UnitnNews;
@@ -79,8 +80,8 @@ public class SocialHelper {
 			}
 		}
 			
-		System.out.println("TD: " + toDelete);
-		System.out.println("TA: " + toAdd);
+//		System.out.println("TD: " + toDelete);
+//		System.out.println("TA: " + toAdd);
 		
 			oid.removeAll(toDelete);
 			oid.addAll(toAdd);
@@ -95,7 +96,14 @@ public class SocialHelper {
 	private static Notification buildNotification(SocialNews sn, String funnelId) {
 		Notification not = new Notification();
 		not.setTitle(sn.getTitle());
-		not.setDescription("New content for " + sn.getTopicName() + ": " + sn.getEntityType() + " " + sn.getTitle() + ".");
+//		not.setDescription("New content for " + sn.getTopicName() + ": " + sn.getEntityType() + " " + sn.getTitle() + ".");
+		String description =  "News for topic '" + sn.getTopicName() + "': ";
+		if (sn.getRelatedId() != null) {
+			description +=  sn.getRelatedEntityType() + "' " + sn.getRelatedTitle() + "' was linked with " + sn.getEntityType() + " '" + sn.getRelatedTitle() + "'.";
+		} else {
+			description += sn.getEntityType() + " '" + sn.getRelatedTitle() + "' was updated.";
+		}
+		not.setDescription(description);
 		not.setFunnelId(funnelId);
 		
 		List<EntityObject> eos = new ArrayList<EntityObject>();
@@ -105,6 +113,10 @@ public class SocialHelper {
 		eos.add(eo);
 		
 		not.setEntities(eos);		
+		
+		NotificationAuthor author = new NotificationAuthor();
+		author.setSocialId(sn.getProviderId());
+		not.setAuthor(author);		
 		
 		return not;
 	}

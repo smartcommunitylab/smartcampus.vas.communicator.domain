@@ -13,6 +13,7 @@ public class SocialNews implements Serializable {
 	private String title;
 	private String entityType;
 	private Long entityId;
+	private Long providerId;
 	
 	private Long relatedId;
 	private String relatedTitle;
@@ -26,6 +27,7 @@ public class SocialNews implements Serializable {
 		this.title = news.getTitle();
 		this.entityType = news.getEntityType();
 		this.entityId = news.getEntityId();
+		this.providerId = news.getProviderId();
 		if (news.hasRelated()) {
 			this.relatedId = news.getRelated().getId();
 			this.relatedTitle = news.getRelated().getTitle();
@@ -72,6 +74,14 @@ public class SocialNews implements Serializable {
 
 	public void setEntityId(Long entityId) {
 		this.entityId = entityId;
+	}
+
+	public Long getProviderId() {
+		return providerId;
+	}
+
+	public void setProviderId(Long providerId) {
+		this.providerId = providerId;
 	}
 
 	public Long getRelatedId() {

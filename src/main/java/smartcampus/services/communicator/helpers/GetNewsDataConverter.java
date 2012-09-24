@@ -10,14 +10,11 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import smartcampus.service.unitnnews.data.message.Unitnnews.NewsEntry;
-import smartcampus.services.communicator.beans.SocialNews;
+import smartcampus.services.communicator.beans.UnitnNews;
 
 import com.google.protobuf.ByteString;
 
-import eu.trentorise.smartcampus.services.social.data.message.Social.News;
-import eu.trentorise.smartcampus.services.social.data.message.Social.NewsList;
-
-public class SocialDataConverter implements DataConverter {
+public class GetNewsDataConverter implements DataConverter {
 
 	public Serializable toMessage(Map<String, Object> parameters) {
 		if (parameters != null) {
@@ -29,21 +26,20 @@ public class SocialDataConverter implements DataConverter {
 
 	@SuppressWarnings("unchecked")
 	public Object fromMessage(Serializable object) {
+		Tuple res = new Tuple();
 		List<ByteString> data = (List<ByteString>) object;
-		List<SocialNews> list = new ArrayList<SocialNews>();
+		List<UnitnNews> list = new ArrayList<UnitnNews>();
 		for (ByteString bs : data) {
 			try {
-				NewsList nl = NewsList.parseFrom(bs);
-				for (News n : nl.getNewsList()) {
-					SocialNews sn = new SocialNews(n);
-					list.add(sn);
-				}
+				NewsEntry e = NewsEntry.parseFrom(bs);
+				UnitnNews un = new UnitnNews(e);
+				list.add(un);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 
-		return list.toArray(new SocialNews[list.size()]);
-	}	
+		return list.toArray(new UnitnNews[list.size()]);
+	}
 
 }

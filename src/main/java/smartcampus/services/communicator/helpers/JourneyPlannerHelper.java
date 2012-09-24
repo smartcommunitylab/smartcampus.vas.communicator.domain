@@ -7,6 +7,7 @@ import java.util.List;
 import smartcampus.services.communicator.beans.EntityObject;
 import smartcampus.services.communicator.beans.JourneyPlannerParameters;
 import smartcampus.services.communicator.beans.Notification;
+import smartcampus.services.communicator.beans.NotificationAuthor;
 import smartcampus.smartplanner.data.message.alerts.Alert;
 import smartcampus.smartplanner.data.message.alerts.AlertDelay;
 import smartcampus.smartplanner.data.message.alerts.AlertParking;
@@ -57,6 +58,10 @@ public class JourneyPlannerHelper {
 		eos.add(eo);
 		
 		not.setEntities(eos);
+		
+		NotificationAuthor author = new NotificationAuthor();
+		author.setName("Journey Planner - " + title);
+		not.setAuthor(author);		
 		
 		return not;
 	}

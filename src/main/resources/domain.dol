@@ -149,6 +149,15 @@ DomainType UnitnFunnel implements AbstractFunnel {
 	
 	private var newsIds : String[];
 	
+	@Service(serviceId="smartcampus.service.unitnnews", methodName="GetOperaNews", converter="smartcampus.services.communicator.helpers.GetNewsDataConverter")
+    operation getOperaNews() returns UnitnNews[];
+    
+    @Service(serviceId="smartcampus.service.unitnnews", methodName="GetCiscaNews", converter="smartcampus.services.communicator.helpers.GetNewsDataConverter")
+    operation getCiscaNews() returns UnitnNews[];
+    
+    @Service(serviceId="smartcampus.service.unitnnews", methodName="GetUnitnNews", converter="smartcampus.services.communicator.helpers.GetNewsDataConverter")
+    operation getUnitnNews(baseurl:String,variableurl:String,source:String) returns UnitnNews[];   
+    
 	@Local(actionName="update")
     operation update(title:String,labels:String[],actions:ActionDescriptor[],funnelData:String);	
 	
@@ -169,6 +178,15 @@ DomainType UnitnFunnel implements AbstractFunnel {
     }    
     
     action delete() => terminate;    
+    
+    action initialize() {
+        invoke data:getOperaNews() => notifyNews(data);
+        invoke data:getCiscaNews() => notifyNews(data);
+        invoke data:getUnitnNews("http://www.unitn.it","ateneo","Ateneo") => notifyNews(data);
+        invoke data:getUnitnNews("http://www.unitn.it","scienze","Scienze") => notifyNews(data);
+        invoke data:getUnitnNews("http://www.unitn.it","ingegneria","Ingegneria") => notifyNews(data);
+        invoke data:getUnitnNews("http://www.unisport.tn.it","","Unisport") => notifyNews(data);  
+    }
 
     subscribe GetNews!updateOpera() if (UnitnNewsHelper.isOpera(data)) => notifyNews(data);
     subscribe GetNews!updateCisca() if (UnitnNewsHelper.isCisca(data)) => notifyNews(data);

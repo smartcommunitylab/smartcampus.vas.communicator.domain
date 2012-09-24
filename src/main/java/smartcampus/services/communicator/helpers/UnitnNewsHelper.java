@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import smartcampus.services.communicator.beans.Notification;
+import smartcampus.services.communicator.beans.NotificationAuthor;
 import smartcampus.services.communicator.beans.UnitnNewsParameters;
 import smartcampus.services.communicator.beans.UnitnNews;
 
@@ -82,8 +83,8 @@ public class UnitnNewsHelper {
 			}
 		}
 			
-		System.out.println("TD: " + toDelete);
-		System.out.println("TA: " + toAdd);
+//		System.out.println("TD: " + toDelete);
+//		System.out.println("TA: " + toAdd);
 		
 			oid.removeAll(toDelete);
 			oid.addAll(toAdd);
@@ -100,6 +101,11 @@ public class UnitnNewsHelper {
 		not.setTitle(un.getTitle());
 		not.setDescription(un.getContent());
 		not.setFunnelId(funnelId);
+		
+		NotificationAuthor author = new NotificationAuthor();
+		author.setName("Unitn news - " + un.getSource());
+		not.setAuthor(author);
+		
 		return not;
 	}
 	
