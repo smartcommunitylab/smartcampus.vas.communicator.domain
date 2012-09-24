@@ -12,6 +12,7 @@ public class Notification {
 	public boolean starred;		
 	public List<String> labelIds;
 	private List<EntityObject> entities;
+	private NotificationAuthor author;
 	
 	public Notification() {
 		timestamp = System.currentTimeMillis();
@@ -73,5 +74,12 @@ public class Notification {
 	public void setEntities(List<EntityObject> entities) {
 		this.entities = entities;
 	}
-	
+
+	public NotificationAuthor getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(NotificationAuthor author) {
+		this.author = author;
+	}
 }
