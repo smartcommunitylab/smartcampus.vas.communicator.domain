@@ -48,6 +48,9 @@ public class SocialHelper {
 				result.add(not);
 				}
 		}
+		
+//		System.out.println("SOC NEWS: " + news.length);
+//		System.out.println("NOT: " + result.size());
 
 		Notification res[] = result.toArray(new Notification[result.size()]);
 		return res;
@@ -80,11 +83,14 @@ public class SocialHelper {
 			}
 		}
 			
-//		System.out.println("TD: " + toDelete);
-//		System.out.println("TA: " + toAdd);
+//		System.out.println("TD: " + toDelete.size());
+//		System.out.println("TA: " + toAdd.size());
+//		System.out.println("Oold: " + oid.size());
 		
 			oid.removeAll(toDelete);
 			oid.addAll(toAdd);
+			
+//			System.out.println("Onew: " + oid.size());
 			
 			return (String[])oid.toArray(new String[oid.size()]);
 	}

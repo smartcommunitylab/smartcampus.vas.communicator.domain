@@ -19,6 +19,7 @@ import smartcampus.services.communicator.beans.UnitnNewsParameters;
 import smartcampus.services.communicator.beans.SocialParameters;
 import smartcampus.services.communicator.beans.UnitnNews;
 import smartcampus.services.communicator.beans.SocialNews;
+import smartcampus.services.communicator.beans.NewsIds;
 
 import smartcampus.services.communicator.helpers.JourneyPlannerHelper;
 import smartcampus.services.communicator.helpers.UnitnNewsHelper;
@@ -147,7 +148,7 @@ DomainType UnitnFunnel implements AbstractFunnel {
 	
 	public inferred var funnelData : String = UnitnNewsParameters.toJSON(parameters);
 	
-	private var newsIds : String[];
+	private var newsIds : NewsIds;
 	
 	@Service(serviceId="smartcampus.service.unitnnews", methodName="GetOperaNews", converter="smartcampus.services.communicator.helpers.GetNewsDataConverter")
     operation getOperaNews() returns UnitnNews[];
@@ -180,6 +181,7 @@ DomainType UnitnFunnel implements AbstractFunnel {
     action delete() => terminate;    
     
     action initialize() {
+    	set newsIds = NewsIds.getInstance();
         invoke data:getOperaNews() => notifyNews(data);
         invoke data:getCiscaNews() => notifyNews(data);
         invoke data:getUnitnNews("http://www.unitn.it","ateneo","Ateneo") => notifyNews(data);
@@ -188,9 +190,9 @@ DomainType UnitnFunnel implements AbstractFunnel {
         invoke data:getUnitnNews("http://www.unisport.tn.it","","Unisport") => notifyNews(data);  
     }
 
-    subscribe GetNews!updateOpera() if (UnitnNewsHelper.isOpera(data)) => notifyNews(data);
-    subscribe GetNews!updateCisca() if (UnitnNewsHelper.isCisca(data)) => notifyNews(data);
-    subscribe GetNews!updateUnitn() if (UnitnNewsHelper.isUnitn(data)) => notifyNews(data);
+    subscribe GetNews!updateOpera() if (UnitnNewsHelper.isSubscribed(data,parameters)) => notifyNews(data);
+    subscribe GetNews!updateCisca() if (UnitnNewsHelper.isSubscribed(data,parameters)) => notifyNews(data);
+    subscribe GetNews!updateUnitn() if (UnitnNewsHelper.isSubscribed(data,parameters)) => notifyNews(data);
 
 }
 
