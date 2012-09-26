@@ -112,7 +112,7 @@ public class UnitnNewsHelper {
 	}
 
 	private static String buildId(UnitnNews news) {
-		return "" + news.getContent().toLowerCase().hashCode();
+		return news.getSource() + "_" + news.getTitle().toLowerCase().hashCode();
 	}
 
 	private static Notification buildNotification(UnitnNews un, String funnelId) {
