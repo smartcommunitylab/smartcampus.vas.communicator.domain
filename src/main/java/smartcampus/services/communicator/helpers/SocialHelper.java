@@ -104,18 +104,29 @@ public class SocialHelper {
 		not.setTitle(sn.getTitle());
 //		not.setDescription("New content for " + sn.getTopicName() + ": " + sn.getEntityType() + " " + sn.getTitle() + ".");
 		String description =  "News for topic '" + sn.getTopicName() + "': ";
+
+		List<EntityObject> eos = new ArrayList<EntityObject>();
+
 		if (sn.getRelatedId() != null) {
+			EntityObject eo = new EntityObject();
+			eo.setEntityId(sn.getRelatedId());
+			eo.setType(sn.getRelatedEntityType());
+			eo.setTitle(sn.getRelatedTitle());
+			eos.add(eo);
+			
 			description +=  sn.getRelatedEntityType() + "' " + sn.getRelatedTitle() + "' was linked with " + sn.getEntityType() + " '" + sn.getRelatedTitle() + "'.";
+		} else if (sn.isUpdate()) {
+			description += sn.getEntityType() + " '" + sn.getTitle() + "' was updated.";
 		} else {
-			description += sn.getEntityType() + " '" + sn.getRelatedTitle() + "' was updated.";
-		}
+			description += sn.getEntityType() + " '" + sn.getTitle() + "' was created.";
+		} 
 		not.setDescription(description);
 		not.setFunnelId(funnelId);
 		
-		List<EntityObject> eos = new ArrayList<EntityObject>();
 		EntityObject eo = new EntityObject();
 		eo.setEntityId(sn.getEntityId());
 		eo.setType(sn.getEntityType());
+		eo.setTitle(sn.getTitle());
 		eos.add(eo);
 		
 		not.setEntities(eos);		
