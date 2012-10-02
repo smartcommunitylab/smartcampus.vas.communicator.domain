@@ -36,7 +36,7 @@ public class SocialHelper {
 				boolean found = false;
 				if (pars.getTopics() != null && pars.getTopics().size() != 0) {
 					for (Long topicId : pars.getTopics()) {
-						  if (sn.getTopicId() == topicId)
+						  if (sn.getTopicId().equals(topicId))
 							found = true;
 							break;
 						}
