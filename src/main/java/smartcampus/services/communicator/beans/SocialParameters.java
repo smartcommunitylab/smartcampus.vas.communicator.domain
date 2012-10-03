@@ -8,6 +8,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 public class SocialParameters {
 
 	private List<Long> topics;
+	private String description;
 	
 	public static SocialParameters fromJSON(String json) {
 		if (json == null || json.length() == 0) {
@@ -43,6 +44,13 @@ public class SocialParameters {
 
 	public void setTopics(List<Long> topics) {
 		this.topics = topics;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}	
-	
 }

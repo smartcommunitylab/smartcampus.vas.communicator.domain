@@ -114,7 +114,7 @@ public class SocialHelper {
 			eo.setTitle(sn.getRelatedTitle());
 			eos.add(eo);
 			
-			description +=  sn.getRelatedEntityType() + "' " + sn.getRelatedTitle() + "' was linked with " + sn.getEntityType() + " '" + sn.getRelatedTitle() + "'.";
+			description +=  sn.getRelatedEntityType() + "' " + sn.getRelatedTitle() + "' was linked with " + sn.getEntityType() + " '" + sn.getTitle() + "'.";
 		} else if (sn.isUpdate()) {
 			description += sn.getEntityType() + " '" + sn.getTitle() + "' was updated.";
 		} else {

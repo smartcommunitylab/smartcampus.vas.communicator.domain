@@ -9,7 +9,9 @@ import it.sayservice.platform.core.message.Core.DomainEvent;
 import it.sayservice.platform.domain.test.DomainListener;
 import it.sayservice.platform.domain.test.DomainTestHelper;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.hornetq.api.core.TransportConfiguration;
 import org.hornetq.jms.client.HornetQJMSConnectionFactory;
@@ -19,6 +21,8 @@ import smartcampus.services.communicator.AbstractFunnelFactoryDOEngine;
 import smartcampus.services.communicator.GetNewsDOEngine;
 import smartcampus.services.communicator.JourneyPlannerFunnelDOEngine;
 import smartcampus.services.communicator.JourneyPlannerFunnelFactoryDOEngine;
+import smartcampus.services.communicator.SocialFunnelDOEngine;
+import smartcampus.services.communicator.SocialFunnelFactoryDOEngine;
 import smartcampus.services.communicator.UnitnFunnelDOEngine;
 import smartcampus.services.communicator.UnitnFunnelFactoryDOEngine;
 
@@ -34,7 +38,7 @@ public class TestDomain {
 
 			  DomainTestHelper helper = new DomainTestHelper(client,new DomainListener() {
 			    public void onDomainEvents(List<DomainEvent> events) {
-			      // DO someth...
+			    	System.err.println(events);
 			    }
 
 			    public void onDataRequest(DODataRequest req) {
@@ -51,16 +55,21 @@ public class TestDomain {
 						  new JourneyPlannerFunnelDOEngine(),
 						  new JourneyPlannerFunnelFactoryDOEngine(),
 						  new UnitnFunnelDOEngine(),
-						  new UnitnFunnelFactoryDOEngine()
+						  new UnitnFunnelFactoryDOEngine(),
+						  new SocialFunnelDOEngine(),
+						  new SocialFunnelFactoryDOEngine()
 				);
 
-				try {
-					List<DomainObject> factories = helper.getDOByType("smartcampus.services.communicator.AbstractFunnelFactory");
-					System.err.println(factories);
-				} catch (InvocationException e1) {
-					e1.printStackTrace();
-				}
+				DomainObject o = helper.getDOById("smartcampus.services.communicator.SocialFunnelFactory", "smartcampus.services.communicator.SocialFunnelFactory.0");
+				Map<String, Object> params = new HashMap<String, Object>();
+				params.put("id", "someId");
+				params.put("userId", "37");
+				params.put("userSocialId", "396");
+				params.put("title", "title");
+				params.put("funnelData", "{\"topics\":[95],\"description\":\"Following LOS VIVANCOS in Extreme Flamenco\"}");
+				helper.invokeDOOperation(o.getType(), o.getId(), "createFunnel", params );
 
+				System.err.println();
 	}
 
 }
