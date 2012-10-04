@@ -273,7 +273,7 @@ DomainType SocialFunnel implements AbstractFunnel {
 	@Local(actionName="delete")
     operation delete();  
     
-    subscribe SocialNewsService!updateSocial(socialId = socialId) => notifySocial(data);
+    subscribe SocialNewsService!updateSocial(socialId = userSocialId) => notifySocial(data);
 
     action notifySocial(news:SocialNews[]) {
     	notifications : Notification[] = SocialHelper.buildNotification(news,id,parameters,socialIds);
@@ -300,7 +300,7 @@ DomainType SocialFunnel implements AbstractFunnel {
 DomainObject SocialNewsService {
 
 	@ServiceNotification(serviceId="eu.trentorise.smartcampus.services.social.SocialService", methodName="GetTopicNews", converter="smartcampus.services.communicator.helpers.SocialNewsConverter")
-	port updateSocial(data:SocialNews[],socialId:Long);		
+	port updateSocial(data:SocialNews[],socialId: String);		
 }
 
 
