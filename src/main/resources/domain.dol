@@ -97,8 +97,8 @@ DomainType JourneyPlannerFunnel implements AbstractFunnel {
 	@Local(actionName="delete")
     operation delete();  
       
-    action notifyAlert(alert:Alert,userId:String,clientId:String) {
-		notifications : Notification[] = JourneyPlannerHelper.buildNotification(alert,id,parameters,clientId);
+    action notifyAlert(alert:Alert,userId:String,clientId:String, title: String) {
+		notifications : Notification[] = JourneyPlannerHelper.buildNotification(alert,id,parameters,clientId, title);
 		publish update(userId,notifications);
     }
     
@@ -111,9 +111,12 @@ DomainType JourneyPlannerFunnel implements AbstractFunnel {
     
     action delete() => terminate;
     
-	subscribe ItineraryObject!alertDelay() if (this.userId == userId) => notifyAlert(alert,userId,clientId);
-	subscribe ItineraryObject!alertStrike()  if (this.userId == userId) =>  notifyAlert(alert,userId,clientId);
-	subscribe ItineraryObject!alertParking() if (this.userId == userId) =>  notifyAlert(alert,userId,clientId);	
+	subscribe ItineraryObject!alertDelay() if (this.userId == userId) => notifyAlert(alert,userId,clientId, title);
+	subscribe ItineraryObject!alertStrike()  if (this.userId == userId) =>  notifyAlert(alert,userId,clientId, title);
+	subscribe ItineraryObject!alertParking() if (this.userId == userId) =>  notifyAlert(alert,userId,clientId, title);	
+	subscribe RecurrentJourneyObject!alertDelay() if (this.userId == userId) => notifyAlert(alert,userId,clientId, title);
+	subscribe RecurrentJourneyObject!alertStrike()  if (this.userId == userId) =>  notifyAlert(alert,userId,clientId, title);
+	subscribe RecurrentJourneyObject!alertParking() if (this.userId == userId) =>  notifyAlert(alert,userId,clientId, title);	
 	
 }
 
