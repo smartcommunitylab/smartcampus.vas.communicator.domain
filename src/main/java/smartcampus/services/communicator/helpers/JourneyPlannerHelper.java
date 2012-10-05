@@ -46,7 +46,7 @@ public class JourneyPlannerHelper {
 
 	private static Notification buildNotification(Alert alert, String funnelId, String title, String clientId, String name) {
 		Notification not = new Notification();
-		not.setTitle(title + " Alert");
+		not.setTitle(title + " Alert for journey '"+name+"'");
 		not.setDescription(alert.getNote());
 		not.setFunnelId(funnelId);
 		
