@@ -42,7 +42,8 @@ public class UnitnNewsHelper {
 				if (pars.getKeywords() != null && pars.getKeywords().size() != 0) {
 					for (String keyword : pars.getKeywords()) {
 						String k = keyword.toLowerCase();
-						if (title.contains(k) || content.contains(k)) {
+						String text = (" " + title + " " + content + " ").toLowerCase();
+						if (text.matches(".*[\\p{Punct}\\p{Blank}]" + k + "[\\p{Punct}\\p{Blank}].*")) {
 							found = true;
 							break;
 						}
