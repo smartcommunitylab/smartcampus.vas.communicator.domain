@@ -4,15 +4,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import smartcampus.services.communicator.beans.EntityObject;
 import smartcampus.services.communicator.beans.Notification;
 import smartcampus.services.communicator.beans.NotificationAuthor;
 import smartcampus.services.communicator.beans.SocialNews;
 import smartcampus.services.communicator.beans.SocialParameters;
-import smartcampus.services.communicator.beans.UnitnNews;
 
 public class SocialHelper {
 
+	private static Log logger = LogFactory.getLog(SocialHelper.class);
+	
 	public static int test(String funnelId) {
 		return 0;
 	}
@@ -28,7 +32,7 @@ public class SocialHelper {
 		
 		for (SocialNews sn : news) {
 			String id = buildId(sn);
-			String title = sn.getTitle().toLowerCase();
+			
 			if (ids.contains(id)) {
 				continue;
 			}
@@ -36,9 +40,10 @@ public class SocialHelper {
 				boolean found = false;
 				if (pars.getTopics() != null && pars.getTopics().size() != 0) {
 					for (Long topicId : pars.getTopics()) {
-						  if (sn.getTopicId().equals(topicId))
-							found = true;
-							break;
+						  if (sn.getTopicId().toString().equals(topicId.toString())) {
+								found = true;
+								break;
+							}	
 						}
 				} else {
 					found = true;
