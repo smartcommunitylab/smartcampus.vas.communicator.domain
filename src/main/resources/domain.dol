@@ -99,7 +99,9 @@ DomainType JourneyPlannerFunnel implements AbstractFunnel {
       
     action notifyAlert(alert:Alert,userId:String,clientId:String, title: String) {
 		notifications : Notification[] = JourneyPlannerHelper.buildNotification(alert,id,parameters,clientId, title);
-		publish update(userId,notifications);
+		if (notifications != null) {
+			publish update(userId,notifications);
+		}
     }
     
     action update(title:String,labels:String[],actions:ActionDescriptor[],funnelData:String) {
@@ -171,7 +173,9 @@ DomainType UnitnFunnel implements AbstractFunnel {
     action notifyNews(news:UnitnNews[]) {
     	notifications : Notification[] = UnitnNewsHelper.buildNotification(news,id,parameters,newsIds);
     	set newsIds = UnitnNewsHelper.updateIds(newsIds, news);
-		publish update(userId,notifications);
+    	if (notifications != null) {
+			publish update(userId,notifications);
+		}
     }
     
     action update(title:String,labels:String[],actions:ActionDescriptor[],funnelData:String) {
@@ -281,7 +285,9 @@ DomainType SocialFunnel implements AbstractFunnel {
     action notifySocial(news:SocialNews[]) {
     	notifications : Notification[] = SocialHelper.buildNotification(news,id,parameters,socialIds);
     	set socialIds = SocialHelper.updateIds(socialIds, news);
-		publish update(userId,notifications);
+    	if (notifications != null) {
+			publish update(userId,notifications);
+		}
     }
     
     action update(title:String,labels:String[],actions:ActionDescriptor[],funnelData:String) {

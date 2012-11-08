@@ -57,8 +57,7 @@ public class SocialHelper {
 //		System.out.println("SOC NEWS: " + news.length);
 //		System.out.println("NOT: " + result.size());
 
-		Notification res[] = result.toArray(new Notification[result.size()]);
-		return res;
+		return (result.size() == 0)?null:result.toArray(new Notification[result.size()]);
 	}
 	
 	public static String[] updateIds(String oldIds[], SocialNews news[]) {

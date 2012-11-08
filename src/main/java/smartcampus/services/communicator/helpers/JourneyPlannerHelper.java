@@ -28,41 +28,53 @@ public class JourneyPlannerHelper {
 		if (alert instanceof AlertDelay) {
 			if (pars.getTypes().contains(JourneyPlannerParameters.DELAYS) || all) {
 				Notification not = buildNotification(alert, funnelId, "Delay", clientId, name);
-				result.add(not);
+				if (not != null) {
+					result.add(not);
+				}
 			}
 		} else if (alert instanceof AlertStrike) {
 			if (pars.getTypes().contains(JourneyPlannerParameters.STRIKES) || all) {
 				Notification not = buildNotification(alert, funnelId, "Strike", clientId, name);
-				result.add(not);
+				if (not != null) {
+					result.add(not);
+				}
 			}
 		} else if (alert instanceof AlertParking) {
 			if (pars.getTypes().contains(JourneyPlannerParameters.PARKINGS) || all) {
 				Notification not = buildNotification(alert, funnelId, "Parking", clientId, name);
-				result.add(not);
+				if (not != null) {
+					result.add(not);
+				}
 			}
 		}
-		return (Notification[]) result.toArray(new Notification[result.size()]);
+		return (result.size() == 0)?null:(Notification[]) result.toArray(new Notification[result.size()]);
 	}
 
 	private static Notification buildNotification(Alert alert, String funnelId, String title, String clientId, String name) {
+//		if (alert instanceof AlertDelay) {
+//			if (((AlertDelay)alert).getDelay() == 0) {
+//				return null;
+//			}
+//		}
+		
 		Notification not = new Notification();
 		not.setTitle(title + " Alert for journey '"+name+"'");
 		not.setDescription(alert.getNote());
 		not.setFunnelId(funnelId);
-		
+
 		List<EntityObject> eos = new ArrayList<EntityObject>();
 		EntityObject eo = new EntityObject();
 		eo.setId(clientId);
 		eo.setType("journey");
 		eo.setTitle(name);
 		eos.add(eo);
-		
+
 		not.setEntities(eos);
-		
+
 		NotificationAuthor author = new NotificationAuthor();
 		author.setName("Journey Planner - " + title);
-		not.setAuthor(author);		
-		
+		not.setAuthor(author);
+
 		return not;
 	}
 

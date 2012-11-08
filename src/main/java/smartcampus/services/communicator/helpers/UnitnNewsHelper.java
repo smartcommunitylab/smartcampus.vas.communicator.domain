@@ -61,8 +61,7 @@ public class UnitnNewsHelper {
 //		System.out.println("UNI NEWS: " + news.length);
 //		System.out.println("NOT: " + result.size());
 
-		Notification res[] = result.toArray(new Notification[result.size()]);
-		return res;
+		return (result.size() == 0)?null:result.toArray(new Notification[result.size()]);
 	}
 
 	public static NewsIds updateIds(NewsIds newsIds, UnitnNews news[]) {
