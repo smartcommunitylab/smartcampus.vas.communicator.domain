@@ -37,8 +37,24 @@ public class UnitnNewsHelper {
 					continue;
 				}
 
-				String content = un.getContent().toLowerCase();
 				boolean found = false;
+				if (pars.getSources() != null && pars.getSources().size() != 0) {
+					for (String source : pars.getSources()) {
+						if (un.getSource().equals(source)) {
+							found = true;
+							break;
+						}
+					}
+				} else {
+					found = true;
+				}
+				
+				if (!found) {
+					continue;
+				}
+				
+				String content = un.getContent().toLowerCase();
+				found = false;
 				if (pars.getKeywords() != null && pars.getKeywords().size() != 0) {
 					for (String keyword : pars.getKeywords()) {
 						String k = keyword.toLowerCase();
