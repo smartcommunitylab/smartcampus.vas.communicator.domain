@@ -1,14 +1,13 @@
 package smartcampus.services.communicator.helpers;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import smartcampus.services.communicator.beans.NewsIds;
 import smartcampus.services.communicator.beans.Notification;
 import smartcampus.services.communicator.beans.NotificationAuthor;
-import smartcampus.services.communicator.beans.UnitnNewsParameters;
 import smartcampus.services.communicator.beans.UnitnNews;
+import smartcampus.services.communicator.beans.UnitnNewsParameters;
 
 public class UnitnNewsHelper {
 
@@ -16,7 +15,7 @@ public class UnitnNewsHelper {
 		return 0;
 	}
 
-	public static Notification[] buildNotification(UnitnNews news[], String funnelId, UnitnNewsParameters pars, NewsIds newsIds) {
+	public static Notification[] buildNotification(UnitnNews news[], String funnelId, NewsIds newsIds) {
 		List<Notification> result = new ArrayList<Notification>();
 
 		String type = extractType(news);
@@ -32,45 +31,45 @@ public class UnitnNewsHelper {
 
 			for (UnitnNews un : news) {
 				String id = buildId(un);
-				String title = un.getTitle().toLowerCase();
+//				String title = un.getTitle().toLowerCase();
 				if (ids.contains(id)) {
 					continue;
 				}
 
-				boolean found = false;
-				if (pars.getSources() != null && pars.getSources().size() != 0) {
-					for (String source : pars.getSources()) {
-						if (un.getSource().equals(source)) {
-							found = true;
-							break;
-						}
-					}
-				} else {
-					found = true;
-				}
-				
-				if (!found) {
-					continue;
-				}
-				
-				String content = un.getContent().toLowerCase();
-				found = false;
-				if (pars.getKeywords() != null && pars.getKeywords().size() != 0) {
-					for (String keyword : pars.getKeywords()) {
-						String k = keyword.toLowerCase();
-						String text = (" " + title + " " + content + " ").toLowerCase();
-						if (text.matches(".*[\\p{Punct}\\p{Blank}]" + k + "[\\p{Punct}\\p{Blank}].*")) {
-							found = true;
-							break;
-						}
-					}
-				} else {
-					found = true;
-				}
-				if (found) {
+//				boolean found = false;
+//				if (pars.getSources() != null && pars.getSources().size() != 0) {
+//					for (String source : pars.getSources()) {
+//						if (un.getSource().equals(source)) {
+//							found = true;
+//							break;
+//						}
+//					}
+//				} else {
+//					found = true;
+//				}
+//				
+//				if (!found) {
+//					continue;
+//				}
+//				
+//				String content = un.getContent().toLowerCase();
+//				found = false;
+//				if (pars.getKeywords() != null && pars.getKeywords().size() != 0) {
+//					for (String keyword : pars.getKeywords()) {
+//						String k = keyword.toLowerCase();
+//						String text = (" " + title + " " + content + " ").toLowerCase();
+//						if (text.matches(".*[\\p{Punct}\\p{Blank}]" + k + "[\\p{Punct}\\p{Blank}].*")) {
+//							found = true;
+//							break;
+//						}
+//					}
+//				} else {
+//					found = true;
+//				}
+//				if (found) {
 					Notification not = buildNotification(un, funnelId);
 					result.add(not);
-				}
+//				}
 			}
 		}
 		
@@ -135,7 +134,6 @@ public class UnitnNewsHelper {
 		Notification not = new Notification();
 		not.setTitle(un.getTitle());
 		not.setDescription(un.getContent());
-		not.setFunnelId(funnelId);
 
 		NotificationAuthor author = new NotificationAuthor();
 		author.setName("Unitn news - " + un.getSource());
@@ -160,12 +158,12 @@ public class UnitnNewsHelper {
 	}
 
 	public static boolean subscribedOpera(UnitnNews news[], UnitnNewsParameters pars) {
-		String type = extractType(news);
+//		String type = extractType(news);
 		return extractType(news).equals("Opera Universitaria");
 	}
 
 	public static boolean subscribedCisca(UnitnNews news[], UnitnNewsParameters pars) {
-		String type = extractType(news);
+//		String type = extractType(news);
 		return extractType(news).equals("Cisca");
 	}
 

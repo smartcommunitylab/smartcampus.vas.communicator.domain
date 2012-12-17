@@ -29,10 +29,12 @@ public class UnitnNewsDataConverter implements DataConverter {
 		Tuple res = new Tuple();
 		List<ByteString> data = (List<ByteString>) object;
 		List<UnitnNews> list = new ArrayList<UnitnNews>();
+		String src = "";
 		for (ByteString bs : data) {
 			try {
 				NewsEntry e = NewsEntry.parseFrom(bs);
 				UnitnNews un = new UnitnNews(e);
+				src = un.getSource();
 				list.add(un);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -40,8 +42,8 @@ public class UnitnNewsDataConverter implements DataConverter {
 		}
 
 		res.put("data",  list.toArray(new UnitnNews[list.size()]));
+		res.put("src", src);
 		return res;
 		
 	}
-
 }

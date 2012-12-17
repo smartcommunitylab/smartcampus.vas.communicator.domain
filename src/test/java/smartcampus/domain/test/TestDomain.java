@@ -1,7 +1,8 @@
 package smartcampus.domain.test;
 
-import it.sayservice.platform.client.InvocationException;
+import it.sayservice.platform.client.ServiceBusAdminClient;
 import it.sayservice.platform.client.ServiceBusClient;
+import it.sayservice.platform.client.jms.JMSServiceBusAdminClient;
 import it.sayservice.platform.client.jms.JMSServiceBusClient;
 import it.sayservice.platform.core.domain.DomainObject;
 import it.sayservice.platform.core.message.Core.DODataRequest;
@@ -16,15 +17,12 @@ import java.util.Map;
 import org.hornetq.api.core.TransportConfiguration;
 import org.hornetq.jms.client.HornetQJMSConnectionFactory;
 
-import smartcampus.services.communicator.AbstractFunnelDOEngine;
-import smartcampus.services.communicator.AbstractFunnelFactoryDOEngine;
-import smartcampus.services.communicator.GetNewsDOEngine;
-import smartcampus.services.communicator.JourneyPlannerFunnelDOEngine;
-import smartcampus.services.communicator.JourneyPlannerFunnelFactoryDOEngine;
-import smartcampus.services.communicator.SocialFunnelDOEngine;
-import smartcampus.services.communicator.SocialFunnelFactoryDOEngine;
-import smartcampus.services.communicator.UnitnFunnelDOEngine;
-import smartcampus.services.communicator.UnitnFunnelFactoryDOEngine;
+import smartcampus.services.communicator.AbstractFeedDOEngine;
+import smartcampus.services.communicator.AbstractSourceDOEngine;
+import smartcampus.services.communicator.JourneyPlannerSourceDOEngine;
+import smartcampus.services.communicator.JourneyPlannerSourceFactoryDOEngine;
+import smartcampus.services.communicator.SocialNewsServiceDOEngine;
+import smartcampus.services.communicator.SocialSourceDOEngine;
 
 
 public class TestDomain {
@@ -35,6 +33,8 @@ public class TestDomain {
 			                  new TransportConfiguration(
 			                    "org.hornetq.core.remoting.impl.netty.NettyConnectorFactory"));
 			  ServiceBusClient client = new JMSServiceBusClient(cf);
+			  
+			  ServiceBusAdminClient adminClient = new JMSServiceBusAdminClient(cf);
 
 			  DomainTestHelper helper = new DomainTestHelper(client,new DomainListener() {
 			    public void onDomainEvents(List<DomainEvent> events) {
@@ -49,26 +49,23 @@ public class TestDomain {
 			  helper.cleanDomainData();
 
 				helper.start(
-						  new AbstractFunnelFactoryDOEngine(),
-						  new AbstractFunnelDOEngine(),
-						  new GetNewsDOEngine(),
-						  new JourneyPlannerFunnelDOEngine(),
-						  new JourneyPlannerFunnelFactoryDOEngine(),
-						  new UnitnFunnelDOEngine(),
-						  new UnitnFunnelFactoryDOEngine(),
-						  new SocialFunnelDOEngine(),
-						  new SocialFunnelFactoryDOEngine()
+						  new AbstractFeedDOEngine(),
+						  new AbstractSourceDOEngine(),
+						  new JourneyPlannerSourceDOEngine(),
+						  new JourneyPlannerSourceFactoryDOEngine(),
+						  new SocialSourceDOEngine(),
+						  new SocialSourceDOEngine(),
+						  new SocialNewsServiceDOEngine()
 				);
 
-				DomainObject o = helper.getDOById("smartcampus.services.communicator.SocialFunnelFactory", "smartcampus.services.communicator.SocialFunnelFactory.0");
+				DomainObject o = helper.getDOById("smartcampus.services.communicator.SocialSourceFactory", "smartcampus.services.communicator.SocialSourceFactory.0");
 				Map<String, Object> params = new HashMap<String, Object>();
-				params.put("id", "someId");
 				params.put("userId", "37");
 				params.put("userSocialId", "396");
-				params.put("title", "title");
-				params.put("funnelData", "{\"topics\":[95],\"description\":\"Following LOS VIVANCOS in Extreme Flamenco\"}");
-				helper.invokeDOOperation(o.getType(), o.getId(), "createFunnel", params );
+				helper.invokeDOOperation(o.getType(), o.getId(), "createDefaultSource", params );
 
+				adminClient.restartService("eu.trentorise.smartcampus.services.social.SocialService", "GetTopicNews");
+				
 				System.err.println();
 	}
 

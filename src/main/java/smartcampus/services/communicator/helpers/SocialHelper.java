@@ -4,24 +4,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import smartcampus.services.communicator.beans.EntityObject;
 import smartcampus.services.communicator.beans.Notification;
 import smartcampus.services.communicator.beans.NotificationAuthor;
 import smartcampus.services.communicator.beans.SocialNews;
-import smartcampus.services.communicator.beans.SocialParameters;
 
 public class SocialHelper {
-
-	private static Log logger = LogFactory.getLog(SocialHelper.class);
-	
 	public static int test(String funnelId) {
 		return 0;
 	}
 
-	public static Notification[] buildNotification(SocialNews news[], String funnelId, SocialParameters pars,String newsIds[]) {
+	public static Notification[] buildNotification(SocialNews news[], String funnelId, String newsIds[]) {
 		List<Notification> result = new ArrayList<Notification>();
 		List<String> ids;
 		if (newsIds != null) {
@@ -37,26 +30,10 @@ public class SocialHelper {
 				continue;
 			}
 
-				boolean found = false;
-				if (pars.getTopics() != null && pars.getTopics().size() != 0) {
-					for (Long topicId : pars.getTopics()) {
-						  if (sn.getTopicId().toString().equals(topicId.toString())) {
-								found = true;
-								break;
-							}	
-						}
-				} else {
-					found = true;
-				}
-				if (found) {
-				Notification not = buildNotification(sn, funnelId);
-				result.add(not);
-				}
+			Notification not = buildNotification(sn, funnelId);
+			result.add(not);
 		}
 		
-//		System.out.println("SOC NEWS: " + news.length);
-//		System.out.println("NOT: " + result.size());
-
 		return (result.size() == 0)?null:result.toArray(new Notification[result.size()]);
 	}
 	
@@ -125,7 +102,6 @@ public class SocialHelper {
 			description += sn.getEntityType() + " '" + sn.getTitle() + "' was created.";
 		} 
 		not.setDescription(description);
-		not.setFunnelId(funnelId);
 		
 		EntityObject eo = new EntityObject();
 		eo.setEntityId(sn.getEntityId());

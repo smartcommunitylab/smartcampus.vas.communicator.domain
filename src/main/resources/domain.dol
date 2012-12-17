@@ -14,9 +14,6 @@ import smartcampus.smartplanner.data.message.alerts.AlertStrike;
 
 import smartcampus.services.communicator.beans.ActionDescriptor;
 import smartcampus.services.communicator.beans.Notification;
-import smartcampus.services.communicator.beans.JourneyPlannerParameters;
-import smartcampus.services.communicator.beans.UnitnNewsParameters;
-import smartcampus.services.communicator.beans.SocialParameters;
 import smartcampus.services.communicator.beans.UnitnNews;
 import smartcampus.services.communicator.beans.SocialNews;
 import smartcampus.services.communicator.beans.NewsIds;
@@ -32,17 +29,14 @@ import smartcampus.service.unitnnews.data.message.Unitnnews;
 
 import java.util.Map;
 
-DomainType AbstractFunnelFactory {
-	public var sourceType : String;
+DomainType AbstractSourceFactory {
+	public immutable var sourceType : String;
 
-    operation createFunnel(id:String,userId:String,userSocialId:String,title:String,labels:String[],actions:ActionDescriptor[],funnelData:String);
-
-    operation createDefaultFunnel(userId:String,userSocialId:String);
+    operation createDefaultSource(userId:String,userSocialId:String);
 }
 
-DomainType AbstractFunnel {
-
-	port update(userId:String, notifications: Notification[]);
+DomainType AbstractSource {
+	port update(userId:String, sourceType: String, notifications: Notification[]);
 
 	public immutable var userId : String;
 	public immutable var userSocialId : String;
@@ -50,233 +44,263 @@ DomainType AbstractFunnel {
 	public immutable var id : String;
 	public immutable var sourceType : String;
 
-	public var title : String;	
-
-	public var labels : String[];
-	public var actions : ActionDescriptor[];
-	
-	public var funnelData : String;
-	
-    operation update(title:String,labels:String[],actions:ActionDescriptor[],funnelData:String);
     operation delete();
-	
+}
+
+DomainType AbstractFeed {
+	public immutable var id : String;
+	public immutable var name : String;
+	public immutable var description : String;
+	public immutable var sourceType : String;
+
+	port update(sourceType: String, notifications: Notification[]);
 }
 
 // JP
 
-DomainObject JourneyPlannerFunnelFactory implements AbstractFunnelFactory {
-	public var sourceType : String = "JourneyPlanner";
+DomainObject JourneyPlannerSourceFactory implements AbstractSourceFactory {
+	public immutable var sourceType : String = "JourneyPlanner";
 
-	@Local(actionName="createFunnel")
-    operation createFunnel(id:String,userId:String,userSocialId:String,title:String,labels:String[],actions:ActionDescriptor[],funnelData:String);
+	@Local(actionName="createDefaultSource")
+    operation createDefaultSource(userId:String,userSocialId:String);        
     
-	@Local(actionName="createDefaultFunnel")
-    operation createDefaultFunnel(userId:String,userSocialId:String);        
-    
-   action createFunnel(id:String,userId:String,userSocialId:String,title:String,labels:String[],actions:ActionDescriptor[],funnelData:String) {
-   		pars : JourneyPlannerParameters = JourneyPlannerParameters.fromJSON(funnelData);
-		create JourneyPlannerFunnel(id:id,userId:userId,userSocialId:userSocialId,title:title,labels:labels,actions:actions,parameters:pars);
-	}
-	
-   action createDefaultFunnel(userId:String,userSocialId:String) {
-		create JourneyPlannerFunnel(id:userId + "_" + System.currentTimeMillis(),userId:userId,userSocialId:userSocialId,title:"Journey Planner",parameters:JourneyPlannerParameters.fromJSON(""));
+   action createDefaultSource(userId:String,userSocialId:String) {
+		create JourneyPlannerSource(id:userId + "_" + System.currentTimeMillis(),userId:userId,userSocialId:userSocialId);
 	}		
 }
 
-DomainType JourneyPlannerFunnel implements AbstractFunnel {
+DomainType JourneyPlannerSource implements AbstractSource {
 
-	private var parameters : JourneyPlannerParameters;
-	
-	public var sourceType : String = "JourneyPlanner";
-	
-	public inferred var funnelData : String = JourneyPlannerParameters.toJSON(parameters);
-
-	@Local(actionName="update")
-    operation update(title:String,labels:String[],actions:ActionDescriptor[],funnelData:String);
+	public immutable var sourceType : String = "JourneyPlanner";
 
 	@Local(actionName="delete")
     operation delete();  
       
     action notifyAlert(alert:Alert,userId:String,clientId:String, title: String) {
-		notifications : Notification[] = JourneyPlannerHelper.buildNotification(alert,id,parameters,clientId, title);
+		notifications : Notification[] = JourneyPlannerHelper.buildNotification(alert,id, clientId, title);
 		if (notifications != null) {
-			publish update(userId,notifications);
+			publish update(userId,sourceType,notifications);
 		}
-    }
-    
-    action update(title:String,labels:String[],actions:ActionDescriptor[],funnelData:String) {
-    	set title = title;
-    	set labels = labels;
-    	set actions = actions;
-    	set parameters = JourneyPlannerParameters.fromJSON(funnelData);
     }
     
     action delete() => terminate;
     
-	subscribe ItineraryObject!alertDelay() if (this.userId == userId) => notifyAlert(alert,userId,clientId, title);
-	subscribe ItineraryObject!alertStrike()  if (this.userId == userId) =>  notifyAlert(alert,userId,clientId, title);
-	subscribe ItineraryObject!alertParking() if (this.userId == userId) =>  notifyAlert(alert,userId,clientId, title);	
-	subscribe RecurrentJourneyObject!alertDelay() if (this.userId == userId) => notifyAlert(alert,userId,clientId, title);
-	subscribe RecurrentJourneyObject!alertStrike()  if (this.userId == userId) =>  notifyAlert(alert,userId,clientId, title);
-	subscribe RecurrentJourneyObject!alertParking() if (this.userId == userId) =>  notifyAlert(alert,userId,clientId, title);	
+	subscribe ItineraryObject!alertDelay(userId=this.userId) => notifyAlert(alert,userId,clientId, title);
+	subscribe ItineraryObject!alertStrike(userId=this.userId) =>  notifyAlert(alert,userId,clientId, title);
+	subscribe ItineraryObject!alertParking(userId=this.userId) =>  notifyAlert(alert,userId,clientId, title);	
+	subscribe RecurrentJourneyObject!alertDelay(userId=this.userId) => notifyAlert(alert,userId,clientId, title);
+	subscribe RecurrentJourneyObject!alertStrike(userId=this.userId) =>  notifyAlert(alert,userId,clientId, title);
+	subscribe RecurrentJourneyObject!alertParking(userId=this.userId) =>  notifyAlert(alert,userId,clientId, title);	
 	
 }
 
 // UNITN
 
-DomainObject UnitnFunnelFactory implements AbstractFunnelFactory {
-	public var sourceType : String = "UnitnNews";
-
-	@Local(actionName="createFunnel")
-    operation createFunnel(id:String,userId:String,userSocialId:String,title:String,labels:String[],actions:ActionDescriptor[],funnelData:String);
-    
-	@Local(actionName="createDefaultFunnel")
-    operation createDefaultFunnel(userId:String,userSocialId:String);    
-    
-   action createFunnel(id:String,userId:String,userSocialId:String,title:String,labels:String[],actions:ActionDescriptor[],funnelData:String) {
-   		pars : UnitnNewsParameters = UnitnNewsParameters.fromJSON(funnelData);
-		create UnitnFunnel(id:id,userId:userId,userSocialId:userSocialId,title:title,labels:labels,actions:actions,parameters:pars);
-	}
+DomainObject OperaFeed implements AbstractFeed {
+	public immutable var id : String = "Opera Universitaria";
+	public immutable var name : String = "Opera Universitaria";
+	public immutable var sourceType : String = "Opera Universitaria";
+	public immutable var description : String = "Opera Universitaria";
+	private var newsIds : NewsIds = NewsIds.getInstance();
 	
-   action createDefaultFunnel(userId:String,userSocialId:String) {
-		create UnitnFunnel(id:userId + "_" + System.currentTimeMillis(),userId:userId,userSocialId:userSocialId,title:"Unitn News",parameters:UnitnNewsParameters.fromJSON(""));
-	}		
+    action notifyNews(news:UnitnNews[]) {
+    	notifications : Notification[] = UnitnNewsHelper.buildNotification(news,id,newsIds);
+    	set newsIds = UnitnNewsHelper.updateIds(newsIds, news);
+    	if (notifications != null && count(notifications) > 0) {
+			publish update(sourceType,notifications);
+		}
+    }
+    subscribe OperaNews!updateNews() => notifyNews(data);
+}
+DomainObject CiscaFeed implements AbstractFeed {
+	public immutable var id : String = "Cisca";
+	public immutable var name : String = "Cisca";
+	public immutable var sourceType : String = "Cisca";
+	public immutable var description : String = "Cisca";
+	private var newsIds : NewsIds = NewsIds.getInstance();
 	
+    action notifyNews(news:UnitnNews[]) {
+    	notifications : Notification[] = UnitnNewsHelper.buildNotification(news,id,newsIds);
+    	set newsIds = UnitnNewsHelper.updateIds(newsIds, news);
+    	if (notifications != null && count(notifications) > 0) {
+			publish update(sourceType,notifications);
+		}
+    }
+    subscribe CiscaNews!updateNews() => notifyNews(data);
+}
+DomainObject AteneoFeed implements AbstractFeed {
+	public immutable var id : String = "Ateneo";
+	public immutable var name : String = "Ateneo";
+	public immutable var description : String = "Ateneo";
+	private var newsIds : NewsIds = NewsIds.getInstance();
 	
+    action notifyNews(news:UnitnNews[]) {
+    	notifications : Notification[] = UnitnNewsHelper.buildNotification(news,id,newsIds);
+    	set newsIds = UnitnNewsHelper.updateIds(newsIds, news);
+    	if (notifications != null && count(notifications) > 0) {
+			publish update(sourceType,notifications);
+		}
+    }
+    subscribe UnitnDataNews!updateNews(src="Ateneo") => notifyNews(data);
+}
+DomainObject ScienceFeed implements AbstractFeed {
+	public immutable var id : String = "Scienze";
+	public immutable var name : String = "Scienze";
+	public immutable var sourceType : String = "Scienze";
+	public immutable var description : String = "Scienze";
+	private var newsIds : NewsIds = NewsIds.getInstance();
+	
+    action notifyNews(news:UnitnNews[]) {
+    	notifications : Notification[] = UnitnNewsHelper.buildNotification(news,id,newsIds);
+    	set newsIds = UnitnNewsHelper.updateIds(newsIds, news);
+    	if (notifications != null && count(notifications) > 0) {
+			publish update(sourceType,notifications);
+		}
+    }
+    subscribe UnitnDataNews!updateNews(src="Scienze") => notifyNews(data);
+}
+DomainObject EngFeed implements AbstractFeed {
+	public immutable var id : String = "Ingegneria";
+	public immutable var name : String = "Ingegneria";
+	public immutable var sourceType : String = "Ingegneria";
+	public immutable var description : String = "Ingegneria";
+	private var newsIds : NewsIds = NewsIds.getInstance();
+	
+    action notifyNews(news:UnitnNews[]) {
+    	notifications : Notification[] = UnitnNewsHelper.buildNotification(news,id,newsIds);
+    	set newsIds = UnitnNewsHelper.updateIds(newsIds, news);
+    	if (notifications != null && count(notifications) > 0) {
+			publish update(sourceType,notifications);
+		}
+    }
+    subscribe UnitnDataNews!updateNews(src="Ingegneria") => notifyNews(data);
+}
+DomainObject UniSportFeed implements AbstractFeed {
+	public immutable var id : String = "UniSport";
+	public immutable var name : String = "UniSport";
+	public immutable var sourceType : String = "UniSport";
+	public immutable var description : String = "UniSport";
+	private var newsIds : NewsIds = NewsIds.getInstance();
+	
+    action notifyNews(news:UnitnNews[]) {
+    	notifications : Notification[] = UnitnNewsHelper.buildNotification(news,id,newsIds);
+    	set newsIds = UnitnNewsHelper.updateIds(newsIds, news);
+    	if (notifications != null && count(notifications) > 0) {
+			publish update(sourceType,notifications);
+		}
+    }
+    subscribe UnitnDataNews!updateNews(src="Unisport") => notifyNews(data);
 }
 
-DomainType UnitnFunnel implements AbstractFunnel {
+DomainObject DisiFeed implements AbstractFeed {
+	public immutable var id : String = "DISI";
+	public immutable var name : String = "DISI";
+	public immutable var sourceType : String = "DISI";
+	public immutable var description : String = "DISI";
+	private var newsIds : NewsIds = NewsIds.getInstance();
+	
+    action notifyNews(news:UnitnNews[]) {
+    	notifications : Notification[] = UnitnNewsHelper.buildNotification(news,id,newsIds);
+    	set newsIds = UnitnNewsHelper.updateIds(newsIds, news);
+    	if (notifications != null && count(notifications) > 0) {
+			publish update(sourceType,notifications);
+		}
+    }
+    subscribe DisiNews!updateNews() => notifyNews(data);
+}
 
-	private var parameters : UnitnNewsParameters;
-	
-	public var sourceType : String = "UnitnNews";
-	
-	public inferred var funnelData : String = UnitnNewsParameters.toJSON(parameters);
-	
-	private var newsIds : NewsIds;
-	
+DomainObject OperaNews {
+    @ServiceNotification(serviceId="smartcampus.service.unitnnews", methodName="GetOperaNews", converter="smartcampus.services.communicator.helpers.UnitnNewsDataConverter")
+    port updateNews(data : UnitnNews[]);
+    @Subscription(serviceId="smartcampus.service.unitnnews", methodName="GetOperaNews")
+    operation subscribeOperaNews();
 	@Service(serviceId="smartcampus.service.unitnnews", methodName="GetOperaNews", converter="smartcampus.services.communicator.helpers.GetNewsDataConverter")
     operation getOperaNews() returns UnitnNews[];
     
-    @Service(serviceId="smartcampus.service.unitnnews", methodName="GetCiscaNews", converter="smartcampus.services.communicator.helpers.GetNewsDataConverter")
-    operation getCiscaNews() returns UnitnNews[];
-    
-    @Service(serviceId="smartcampus.service.unitnnews", methodName="GetUnitnNews", converter="smartcampus.services.communicator.helpers.GetNewsDataConverter")
-    operation getUnitnNews(baseurl:String,variableurl:String,source:String) returns UnitnNews[];
-    
-    @Service(serviceId="smartcampus.service.unitnnews", methodName="GetDisiNews", converter="smartcampus.services.communicator.helpers.GetNewsDataConverter")
-    operation getDisiNews() returns UnitnNews[];       
-    
-	@Local(actionName="update")
-    operation update(title:String,labels:String[],actions:ActionDescriptor[],funnelData:String);	
-	
-	@Local(actionName="delete")
-    operation delete();  
-
-    action notifyNews(news:UnitnNews[]) {
-    	notifications : Notification[] = UnitnNewsHelper.buildNotification(news,id,parameters,newsIds);
-    	set newsIds = UnitnNewsHelper.updateIds(newsIds, news);
-    	if (notifications != null) {
-			publish update(userId,notifications);
-		}
-    }
-    
-    action update(title:String,labels:String[],actions:ActionDescriptor[],funnelData:String) {
-    	set title = title;
-    	set labels = labels;
-    	set actions = actions;
-    	set parameters = UnitnNewsParameters.fromJSON(funnelData);
-    }    
-    
-    action delete() => terminate;    
-    
-    action initialize() {
-    	set newsIds = NewsIds.getInstance();
-        invoke data:getOperaNews() => notifyNews(data);
-        invoke data:getCiscaNews() => notifyNews(data);
-        invoke data:getUnitnNews("http://www.unitn.it","ateneo","Ateneo") => notifyNews(data);
-        invoke data:getUnitnNews("http://www.unitn.it","scienze","Scienze") => notifyNews(data);
-        invoke data:getUnitnNews("http://www.unitn.it","ingegneria","Ingegneria") => notifyNews(data);
-        invoke data:getUnitnNews("http://www.unisport.tn.it","","Unisport") => notifyNews(data);
-        invoke data:getDisiNews() => notifyNews(data);  
-    }
-
-    subscribe GetNews!updateOpera() if (UnitnNewsHelper.isSubscribed(data,parameters)) => notifyNews(data);
-    subscribe GetNews!updateCisca() if (UnitnNewsHelper.isSubscribed(data,parameters)) => notifyNews(data);
-    subscribe GetNews!updateUnitn() if (UnitnNewsHelper.isSubscribed(data,parameters)) => notifyNews(data);
-    subscribe GetNews!updateDisi() if (UnitnNewsHelper.isSubscribed(data,parameters)) => notifyNews(data);
-
-}
-
-// UNITN NEWS 
-
-DomainObject GetNews {
-    
-    @ServiceNotification(serviceId="smartcampus.service.unitnnews", methodName="GetOperaNews", converter="smartcampus.services.communicator.helpers.UnitnNewsDataConverter")
-    port updateOpera(data : UnitnNews[]);
-    
-    @ServiceNotification(serviceId="smartcampus.service.unitnnews", methodName="GetCiscaNews", converter="smartcampus.services.communicator.helpers.UnitnNewsDataConverter")
-    port updateCisca(data : UnitnNews[]);
-    
-    @ServiceNotification(serviceId="smartcampus.service.unitnnews", methodName="GetUnitnNews", converter="smartcampus.services.communicator.helpers.UnitnNewsDataConverter")
-    port updateUnitn(data : UnitnNews[]);   
-    
-    @ServiceNotification(serviceId="smartcampus.service.unitnnews", methodName="GetDisiNews", converter="smartcampus.services.communicator.helpers.UnitnNewsDataConverter")
-    port updateDisi(data : UnitnNews[]);       
-
-    @Subscription(serviceId="smartcampus.service.unitnnews", methodName="GetOperaNews")
-    operation subscribeOperaNews();
-    
-    @Subscription(serviceId="smartcampus.service.unitnnews", methodName="GetCiscaNews")
-    operation subscribeCiscaNews();    
-    
-    @Subscription(serviceId="smartcampus.service.unitnnews", methodName="GetUnitnNews")
-    operation subscribeUnitnNews(baseurl:String,variableurl:String,source:String);
-    
-    @Subscription(serviceId="smartcampus.service.unitnnews", methodName="GetDisiNews")
-    operation subscribeDisiNews();      
-    
+	action notifyNews(data: UnitnNews[]) {
+		publish updateNews(data);
+	}
     action initialize() {
         invoke subscribeOperaNews();
+        invoke data:getOperaNews() => notifyNews(data);
+    }
+}
+DomainObject CiscaNews {
+    @ServiceNotification(serviceId="smartcampus.service.unitnnews", methodName="GetCiscaNews", converter="smartcampus.services.communicator.helpers.UnitnNewsDataConverter")
+    port updateNews(data : UnitnNews[]);
+    @Subscription(serviceId="smartcampus.service.unitnnews", methodName="GetCiscaNews")
+    operation subscribeCiscaNews();    
+    @Service(serviceId="smartcampus.service.unitnnews", methodName="GetCiscaNews", converter="smartcampus.services.communicator.helpers.GetNewsDataConverter")
+    operation getCiscaNews() returns UnitnNews[];
+
+	action notifyNews(data: UnitnNews[]) {
+		publish updateNews(data);
+	}
+    action initialize() {
         invoke subscribeCiscaNews();
+        invoke data:getCiscaNews() => notifyNews(data);
+    }
+}
+DomainObject UnitnDataNews {
+    @ServiceNotification(serviceId="smartcampus.service.unitnnews", methodName="GetUnitnNews", converter="smartcampus.services.communicator.helpers.UnitnNewsDataConverter")
+    port updateNews(src : String, data : UnitnNews[]);   
+	@Subscription(serviceId="smartcampus.service.unitnnews", methodName="GetUnitnNews")
+    operation subscribeUnitnNews(baseurl:String,variableurl:String,source:String);
+    @Service(serviceId="smartcampus.service.unitnnews", methodName="GetUnitnNews", converter="smartcampus.services.communicator.helpers.GetNewsDataConverter")
+    operation getUnitnNews(baseurl:String,variableurl:String,source:String) returns UnitnNews[];
+
+	action notifyNews(src: String, data: UnitnNews[]) {
+		publish updateNews(src, data);
+	}
+
+    action initialize() {
         invoke subscribeUnitnNews("http://www.unitn.it","ateneo","Ateneo");
         invoke subscribeUnitnNews("http://www.unitn.it","scienze","Scienze");
         invoke subscribeUnitnNews("http://www.unitn.it","ingegneria","Ingegneria");
         invoke subscribeUnitnNews("http://www.unisport.tn.it","","Unisport");
+
+        invoke data:getUnitnNews("http://www.unitn.it","ateneo","Ateneo") => notifyNews("Ateneo",data);
+        invoke data:getUnitnNews("http://www.unitn.it","scienze","Scienze") => notifyNews("Scienze",data);
+        invoke data:getUnitnNews("http://www.unitn.it","ingegneria","Ingegneria") => notifyNews("Ingegneria",data);
+        invoke data:getUnitnNews("http://www.unisport.tn.it","","Unisport") => notifyNews("Unisport",data);
+    }
+  }
+
+DomainObject DisiNews {
+    @ServiceNotification(serviceId="smartcampus.service.unitnnews", methodName="GetDisiNews", converter="smartcampus.services.communicator.helpers.UnitnNewsDataConverter")
+    port updateNews(data : UnitnNews[]);       
+    @Subscription(serviceId="smartcampus.service.unitnnews", methodName="GetDisiNews")
+    operation subscribeDisiNews();      
+    @Service(serviceId="smartcampus.service.unitnnews", methodName="GetDisiNews", converter="smartcampus.services.communicator.helpers.GetNewsDataConverter")
+    operation getDisiNews() returns UnitnNews[];       
+    
+	action notifyNews(data: UnitnNews[]) {
+		publish updateNews(data);
+	}
+    action initialize() {
         invoke subscribeDisiNews();               
+        invoke data:getDisiNews() => notifyNews(data);  
     }
 }
 
 // SOCIAL
 
-DomainObject SocialFunnelFactory implements AbstractFunnelFactory {
-	public var sourceType : String = "Social";
-
-	@Local(actionName="createFunnel")
-    operation createFunnel(id:String,userId:String,userSocialId:String,title:String,labels:String[],actions:ActionDescriptor[],funnelData:String);
+DomainObject SocialSourceFactory implements AbstractSourceFactory {
+	public immutable var sourceType : String = "Social";
+   
+	@Local(actionName="createDefaultSource")
+    operation createDefaultSource(userId:String,userSocialId:String);    
     
-	@Local(actionName="createDefaultFunnel")
-    operation createDefaultFunnel(userId:String,userSocialId:String);    
-    
-   action createFunnel(id:String,userId:String,userSocialId:String,title:String,labels:String[],actions:ActionDescriptor[],funnelData:String) {
-   		pars : SocialParameters = SocialParameters.fromJSON(funnelData);
-		create SocialFunnel(id:id,userId:userId,userSocialId:userSocialId,title:title,labels:labels,actions:actions,parameters:pars);
-	}
 	
-   action createDefaultFunnel(userId:String,userSocialId:String) {
-		create SocialFunnel(id:userId + "_" + System.currentTimeMillis(),userId:userId,userSocialId:userSocialId,title:"Social",parameters:SocialParameters.fromJSON(""));
+   action createDefaultSource(userId:String,userSocialId:String) {
+		create SocialSource(id:userId + "_" + System.currentTimeMillis(),userId:userId,userSocialId:userSocialId);
 	}		
 	
 	
 }
 
-DomainType SocialFunnel implements AbstractFunnel {
-
-	private var parameters : SocialParameters;
-	
-	public var sourceType : String = "Social";
-	
-	public inferred var funnelData : String = SocialParameters.toJSON(parameters);
+DomainType SocialSource implements AbstractSource {
+	public immutable var sourceType : String = "Social";
 	
 	private var socialIds : String[];
 	
@@ -286,28 +310,18 @@ DomainType SocialFunnel implements AbstractFunnel {
     @Service(serviceId="eu.trentorise.smartcampus.services.social.SocialService", methodName="GetTopicNews", converter="smartcampus.services.communicator.helpers.SocialDataConverter")
     operation getSocial(actorId:String) returns SocialNews[];	   	
 	
-	@Local(actionName="update")
-    operation update(title:String,labels:String[],actions:ActionDescriptor[],funnelData:String);	
-	
 	@Local(actionName="delete")
     operation delete();  
     
     subscribe SocialNewsService!updateSocial(socialId = userSocialId) => notifySocial(data);
 
     action notifySocial(news:SocialNews[]) {
-    	notifications : Notification[] = SocialHelper.buildNotification(news,id,parameters,socialIds);
+    	notifications : Notification[] = SocialHelper.buildNotification(news,id,socialIds);
     	set socialIds = SocialHelper.updateIds(socialIds, news);
     	if (notifications != null) {
-			publish update(userId,notifications);
+			publish update(userId,sourceType,notifications);
 		}
     }
-    
-    action update(title:String,labels:String[],actions:ActionDescriptor[],funnelData:String) {
-    	set title = title;
-    	set labels = labels;
-    	set actions = actions;
-    	set parameters = SocialParameters.fromJSON(funnelData);
-    }    
     
     action delete() => terminate;    
 

@@ -1,6 +1,5 @@
 package smartcampus.services.communicator.beans;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Notification {
@@ -8,15 +7,11 @@ public class Notification {
 	public String title;
 	public String description;
 	public long timestamp;
-	public String funnelId;
-	public boolean starred;		
-	public List<String> labelIds;
 	private List<EntityObject> entities;
 	private NotificationAuthor author;
 	
 	public Notification() {
 		timestamp = System.currentTimeMillis();
-		labelIds = new ArrayList<String>();
 	}
 
 	public String getTitle() {
@@ -41,30 +36,6 @@ public class Notification {
 
 	public void setTimestamp(long timestamp) {
 		this.timestamp = timestamp;
-	}
-
-	public String getFunnelId() {
-		return funnelId;
-	}
-
-	public void setFunnelId(String funnelId) {
-		this.funnelId = funnelId;
-	}
-
-	public boolean isStarred() {
-		return starred;
-	}
-
-	public void setStarred(boolean starred) {
-		this.starred = starred;
-	}
-
-	public List<String> getLabelIds() {
-		return labelIds;
-	}
-
-	public void setLabelIds(List<String> labelIds) {
-		this.labelIds = labelIds;
 	}
 
 	public List<EntityObject> getEntities() {
