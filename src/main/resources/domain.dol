@@ -31,6 +31,7 @@ import java.util.Map;
 
 DomainType AbstractSourceFactory {
 	public immutable var sourceType : String;
+    public immutable var name : String;
 
     operation createDefaultSource(userId:String,userSocialId:String);
 }
@@ -60,6 +61,7 @@ DomainType AbstractFeed {
 
 DomainObject JourneyPlannerSourceFactory implements AbstractSourceFactory {
 	public immutable var sourceType : String = "JourneyPlanner";
+    public immutable var name : String = "Journey Planner";
 
 	@Local(actionName="createDefaultSource")
     operation createDefaultSource(userId:String,userSocialId:String);        
@@ -132,6 +134,7 @@ DomainObject AteneoFeed implements AbstractFeed {
 	public immutable var id : String = "Ateneo";
 	public immutable var name : String = "Ateneo";
 	public immutable var description : String = "Ateneo";
+    public immutable var sourceType : String = "Ateneo";
 	private var newsIds : NewsIds = NewsIds.getInstance();
 	
     action notifyNews(news:UnitnNews[]) {
@@ -287,6 +290,7 @@ DomainObject DisiNews {
 
 DomainObject SocialSourceFactory implements AbstractSourceFactory {
 	public immutable var sourceType : String = "Social";
+    public immutable var name : String = "Community Manager";
    
 	@Local(actionName="createDefaultSource")
     operation createDefaultSource(userId:String,userSocialId:String);    
