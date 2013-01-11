@@ -32,12 +32,12 @@ import java.util.Map;
 import org.hornetq.api.core.TransportConfiguration;
 import org.hornetq.jms.client.HornetQJMSConnectionFactory;
 
-import smartcampus.services.communicator.AbstractFeedDOEngine;
-import smartcampus.services.communicator.AbstractSourceDOEngine;
-import smartcampus.services.communicator.JourneyPlannerSourceDOEngine;
-import smartcampus.services.communicator.JourneyPlannerSourceFactoryDOEngine;
-import smartcampus.services.communicator.SocialNewsServiceDOEngine;
-import smartcampus.services.communicator.SocialSourceDOEngine;
+import smartcampus.services.communicator.domain.AbstractFeedDOEngine;
+import smartcampus.services.communicator.domain.AbstractSourceDOEngine;
+import smartcampus.services.communicator.domain.JourneyPlannerSourceDOEngine;
+import smartcampus.services.communicator.domain.JourneyPlannerSourceFactoryDOEngine;
+import smartcampus.services.communicator.domain.SocialNewsServiceDOEngine;
+import smartcampus.services.communicator.domain.SocialSourceDOEngine;
 
 
 public class TestDomain {
