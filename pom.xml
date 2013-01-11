@@ -47,8 +47,8 @@
 
 
 		<dependency>
-			<groupId>smartcampus</groupId>
-			<artifactId>sc.app.smartplanner.beans</artifactId>
+			<groupId>it.sayservice.platform.smartplanner</groupId>
+			<artifactId>smartplanner-beans</artifactId>
 			<version>1.0</version>
 			<type>jar</type>
 			<scope>provided</scope>
@@ -88,5 +88,18 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<repositories>
+        <repository>
+            <id>SmartCampus</id>
+            <url>http://repository.smartcampuslab.it/content/groups/public</url>
+        </repository>
+    </repositories> 
+    <pluginRepositories>
+    	<pluginRepository>
+            <id>SmartCampus</id>
+            <url>http://repository.smartcampuslab.it/content/groups/public</url>
+    	</pluginRepository>
+    </pluginRepositories>
 
 </project>
