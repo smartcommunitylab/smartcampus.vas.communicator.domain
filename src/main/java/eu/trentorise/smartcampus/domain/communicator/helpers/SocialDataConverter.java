@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  ******************************************************************************/
-package smartcampus.services.communicator.helpers;
+package eu.trentorise.smartcampus.domain.communicator.helpers;
 
 import it.sayservice.platform.core.domain.actions.DataConverter;
 import it.sayservice.platform.core.domain.ext.Tuple;
@@ -25,10 +25,10 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import smartcampus.service.unitnnews.data.message.Unitnnews.NewsEntry;
-import smartcampus.services.communicator.beans.SocialNews;
 
 import com.google.protobuf.ByteString;
 
+import eu.trentorise.smartcampus.domain.communicator.beans.SocialNews;
 import eu.trentorise.smartcampus.services.social.data.message.Social.News;
 import eu.trentorise.smartcampus.services.social.data.message.Social.NewsList;
 

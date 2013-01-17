@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  ******************************************************************************/
-package smartcampus.services.communicator.beans;
+package eu.trentorise.smartcampus.domain.communicator.beans;
 
 import java.util.ArrayList;
 import java.util.List;

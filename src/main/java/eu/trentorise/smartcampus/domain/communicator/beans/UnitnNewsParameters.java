@@ -13,42 +13,33 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  ******************************************************************************/
-package smartcampus.services.communicator.beans;
+package eu.trentorise.smartcampus.domain.communicator.beans;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
-public class JourneyPlannerParameters {
+public class UnitnNewsParameters {
 
-	public static final String DELAYS = "delays";
-	public static final String STRIKES = "strikes";
-	public static final String PARKINGS = "parkings";
-	
-//	private boolean delays;
-//	private boolean strikes;
-//	private boolean parkings;
-	
-	private List<String> types;
-	
 	private List<String> sources;
+	private List<String> keywords;
 	
-	public static JourneyPlannerParameters fromJSON(String json) {
+	public static UnitnNewsParameters fromJSON(String json) {
 		if (json == null || json.length() == 0) {
-			return new JourneyPlannerParameters();
+			return new UnitnNewsParameters();
 		}
 		try {
 		ObjectMapper mapper = new ObjectMapper();
-		JourneyPlannerParameters pars = mapper.readValue(json, JourneyPlannerParameters.class);
+		UnitnNewsParameters pars = mapper.readValue(json, UnitnNewsParameters.class);
 		return pars;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new JourneyPlannerParameters();
+			return new UnitnNewsParameters();
 		}
 	}
 	
-	public static String toJSON(JourneyPlannerParameters parameters) {
+	public static String toJSON(UnitnNewsParameters parameters) {
 		try {
 		ObjectMapper mapper = new ObjectMapper();
 		return mapper.writeValueAsString(parameters);
@@ -56,30 +47,28 @@ public class JourneyPlannerParameters {
 			e.printStackTrace();
 			return null;
 		}
-	}	
+	}
 	
-	public JourneyPlannerParameters() {
-		types = new ArrayList<String>();
+	public UnitnNewsParameters() {
 		sources = new ArrayList<String>();
-	}
-
-	public List<String> getTypes() {
-		return types;
-	}
-
-	public void setTypes(List<String> types) {
-		this.types = types;
-	}
+		keywords = new ArrayList<String>();
+	}	
 
 	public List<String> getSources() {
 		return sources;
 	}
 
-	public void setSources(List<String> sources) {
-		this.sources = sources;
+	public void setSources(List<String> source) {
+		this.sources = source;
 	}
 
-	
+	public List<String> getKeywords() {
+		return keywords;
+	}
+
+	public void setKeywords(List<String> keywords) {
+		this.keywords = keywords;
+	}
 	
 	
 }

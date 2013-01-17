@@ -13,43 +13,59 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  ******************************************************************************/
-package smartcampus.services.communicator.beans;
+package eu.trentorise.smartcampus.domain.communicator.beans;
 
-import java.io.Serializable;
+import java.util.List;
 
-import smartcampus.service.unitnnews.data.message.Unitnnews.NewsEntry;
+public class Notification {
 
-public class UnitnNews implements Serializable {
-
-	private String title;
-	private String content;
-	private String source;
+	public String title;
+	public String description;
+	public long timestamp;
+	private List<EntityObject> entities;
+	private NotificationAuthor author;
 	
-	public UnitnNews(NewsEntry entry) {
-		this.title = entry.getTitle();
-		this.content = entry.getContent();
-		this.source = entry.getSource();
+	public Notification() {
+		timestamp = System.currentTimeMillis();
 	}
-	
+
 	public String getTitle() {
 		return title;
 	}
+
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	public String getContent() {
-		return content;
+
+	public String getDescription() {
+		return description;
 	}
-	public void setContent(String content) {
-		this.content = content;
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
-	public String getSource() {
-		return source;
+
+	public long getTimestamp() {
+		return timestamp;
 	}
-	public void setSource(String source) {
-		this.source = source;
+
+	public void setTimestamp(long timestamp) {
+		this.timestamp = timestamp;
 	}
-	
-	
-	
+
+	public List<EntityObject> getEntities() {
+		return entities;
+	}
+
+	public void setEntities(List<EntityObject> entities) {
+		this.entities = entities;
+	}
+
+	public NotificationAuthor getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(NotificationAuthor author) {
+		this.author = author;
+	}
 }

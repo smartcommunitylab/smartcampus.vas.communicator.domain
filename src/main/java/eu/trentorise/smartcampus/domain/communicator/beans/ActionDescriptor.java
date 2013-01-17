@@ -13,42 +13,57 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  ******************************************************************************/
-package smartcampus.services.communicator.beans;
+package eu.trentorise.smartcampus.domain.communicator.beans;
 
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
-public class NewsIds {
+public class ActionDescriptor {
 
-	private Map<String, List<String>> ids;
+	private String label;
+	private int type;
+	private String value;
+
 	
-	public static NewsIds getInstance() {
-		return new NewsIds();
-	}
-	
-	public NewsIds() {
-		ids = new TreeMap<String, List<String>>();
-	}
-	
-	public boolean contains(String key) {
-		return ids.containsKey(key);
-	}
-	
-	public List<String> getValues(String key) {
-		return ids.get(key);
-	}
-	
-	public void setValues(String key, List<String> values) {
-		ids.put(key, values);
+	public ActionDescriptor() {
+		super();
 	}
 
-	public Map<String, List<String>> getIds() {
-		return ids;
+
+	public ActionDescriptor(String label, int type, String value) {
+		super();
+		this.label = label;
+		this.type = type;
+		this.value = value;
 	}
 
-	public void setIds(Map<String, List<String>> ids) {
-		this.ids = ids;
-	}	
+
+	public String getLabel() {
+		return label;
+	}
+
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
+
+	public int getType() {
+		return type;
+	}
+
+
+	public void setType(int type) {
+		this.type = type;
+	}
+
+
+	public String getValue() {
+		return value;
+	}
+
+
+	public void setValue(String value) {
+		this.value = value;
+	}
 	
 }
+

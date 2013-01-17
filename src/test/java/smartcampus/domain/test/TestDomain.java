@@ -32,12 +32,13 @@ import java.util.Map;
 import org.hornetq.api.core.TransportConfiguration;
 import org.hornetq.jms.client.HornetQJMSConnectionFactory;
 
-import smartcampus.services.communicator.domain.AbstractFeedDOEngine;
-import smartcampus.services.communicator.domain.AbstractSourceDOEngine;
-import smartcampus.services.communicator.domain.JourneyPlannerSourceDOEngine;
-import smartcampus.services.communicator.domain.JourneyPlannerSourceFactoryDOEngine;
-import smartcampus.services.communicator.domain.SocialNewsServiceDOEngine;
-import smartcampus.services.communicator.domain.SocialSourceDOEngine;
+import eu.trentorise.smartcampus.domain.communicator.AbstractFeedDOEngine;
+import eu.trentorise.smartcampus.domain.communicator.AbstractSourceDOEngine;
+import eu.trentorise.smartcampus.domain.communicator.JourneyPlannerSourceDOEngine;
+import eu.trentorise.smartcampus.domain.communicator.JourneyPlannerSourceFactoryDOEngine;
+import eu.trentorise.smartcampus.domain.communicator.SocialNewsServiceDOEngine;
+import eu.trentorise.smartcampus.domain.communicator.SocialSourceDOEngine;
+
 
 
 public class TestDomain {
@@ -73,7 +74,7 @@ public class TestDomain {
 						  new SocialNewsServiceDOEngine()
 				);
 
-				DomainObject o = helper.getDOById("smartcampus.services.communicator.SocialSourceFactory", "smartcampus.services.communicator.SocialSourceFactory.0");
+				DomainObject o = helper.getDOById("eu.trentorise.smartcampus.domain.communicator.SocialSourceFactory", "eu.trentorise.smartcampus.domain.communicator.SocialSourceFactory.0");
 				Map<String, Object> params = new HashMap<String, Object>();
 				params.put("userId", "37");
 				params.put("userSocialId", "396");

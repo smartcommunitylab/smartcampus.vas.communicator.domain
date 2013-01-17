@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.trentorise.smartcampus</groupId>
 	<artifactId>smartcampus.vas.communicator.domain</artifactId>
-	<version>1.0</version>
+	<version>1.1</version>
 	<packaging>bundle</packaging>
 
 	<parent>
@@ -64,7 +64,7 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Export-Package>smartcampus.services.communicator.*</Export-Package>
+						<Export-Package>eu.trentorise.smartcampus.domain.communicator.*</Export-Package>
 						<Import-Package>!it.sayservice.platform.compiler.*,*</Import-Package>
 					</instructions>
 				</configuration>

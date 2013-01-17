@@ -13,57 +13,25 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  ******************************************************************************/
-package smartcampus.services.communicator.beans;
+package eu.trentorise.smartcampus.domain.communicator.beans;
 
+public class NotificationAuthor {
 
-public class ActionDescriptor {
-
-	private String label;
-	private int type;
-	private String value;
-
+	private Long socialId;
+	private String name;
 	
-	public ActionDescriptor() {
-		super();
+	public Long getSocialId() {
+		return socialId;
 	}
-
-
-	public ActionDescriptor(String label, int type, String value) {
-		super();
-		this.label = label;
-		this.type = type;
-		this.value = value;
+	public void setSocialId(Long socialId) {
+		this.socialId = socialId;
 	}
-
-
-	public String getLabel() {
-		return label;
+	public String getName() {
+		return name;
 	}
-
-
-	public void setLabel(String label) {
-		this.label = label;
+	public void setName(String name) {
+		this.name = name;
 	}
-
-
-	public int getType() {
-		return type;
-	}
-
-
-	public void setType(int type) {
-		this.type = type;
-	}
-
-
-	public String getValue() {
-		return value;
-	}
-
-
-	public void setValue(String value) {
-		this.value = value;
-	}
+	
 	
 }
-

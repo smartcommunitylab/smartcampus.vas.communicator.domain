@@ -13,16 +13,17 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  ******************************************************************************/
-package smartcampus.services.communicator.helpers;
+package eu.trentorise.smartcampus.domain.communicator.helpers;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import smartcampus.services.communicator.beans.NewsIds;
-import smartcampus.services.communicator.beans.Notification;
-import smartcampus.services.communicator.beans.NotificationAuthor;
-import smartcampus.services.communicator.beans.UnitnNews;
-import smartcampus.services.communicator.beans.UnitnNewsParameters;
+import eu.trentorise.smartcampus.domain.communicator.beans.NewsIds;
+import eu.trentorise.smartcampus.domain.communicator.beans.Notification;
+import eu.trentorise.smartcampus.domain.communicator.beans.NotificationAuthor;
+import eu.trentorise.smartcampus.domain.communicator.beans.UnitnNews;
+import eu.trentorise.smartcampus.domain.communicator.beans.UnitnNewsParameters;
+
 
 public class UnitnNewsHelper {
 

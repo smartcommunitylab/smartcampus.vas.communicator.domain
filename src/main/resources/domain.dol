@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  ******************************************************************************/
-package smartcampus.services.communicator.domain;
+package eu.trentorise.smartcampus.domain.communicator;
 
 import it.sayservice.platform.compiler.domain.model.annotations.ServiceNotification;
 import it.sayservice.platform.compiler.domain.model.annotations.Service;
@@ -27,15 +27,15 @@ import it.sayservice.platform.smartplanner.data.message.alerts.AlertDelay;
 import it.sayservice.platform.smartplanner.data.message.alerts.AlertParking;
 import it.sayservice.platform.smartplanner.data.message.alerts.AlertStrike;
 
-import smartcampus.services.communicator.beans.ActionDescriptor;
-import smartcampus.services.communicator.beans.Notification;
-import smartcampus.services.communicator.beans.UnitnNews;
-import smartcampus.services.communicator.beans.SocialNews;
-import smartcampus.services.communicator.beans.NewsIds;
+import eu.trentorise.smartcampus.domain.communicator.beans.ActionDescriptor;
+import eu.trentorise.smartcampus.domain.communicator.beans.Notification;
+import eu.trentorise.smartcampus.domain.communicator.beans.UnitnNews;
+import eu.trentorise.smartcampus.domain.communicator.beans.SocialNews;
+import eu.trentorise.smartcampus.domain.communicator.beans.NewsIds;
 
-import smartcampus.services.communicator.helpers.JourneyPlannerHelper;
-import smartcampus.services.communicator.helpers.UnitnNewsHelper;
-import smartcampus.services.communicator.helpers.SocialHelper;
+import eu.trentorise.smartcampus.domain.communicator.helpers.JourneyPlannerHelper;
+import eu.trentorise.smartcampus.domain.communicator.helpers.UnitnNewsHelper;
+import eu.trentorise.smartcampus.domain.communicator.helpers.SocialHelper;
 
 
 import smartcampus.services.journeyplanner.*;
@@ -228,11 +228,11 @@ DomainObject DisiFeed implements AbstractFeed {
 }
 
 DomainObject OperaNews {
-    @ServiceNotification(serviceId="smartcampus.service.unitnnews", methodName="GetOperaNews", converter="smartcampus.services.communicator.helpers.UnitnNewsDataConverter")
+    @ServiceNotification(serviceId="smartcampus.service.unitnnews", methodName="GetOperaNews", converter="eu.trentorise.smartcampus.domain.communicator.helpers.UnitnNewsDataConverter")
     port updateNews(data : UnitnNews[]);
     @Subscription(serviceId="smartcampus.service.unitnnews", methodName="GetOperaNews")
     operation subscribeOperaNews();
-	@Service(serviceId="smartcampus.service.unitnnews", methodName="GetOperaNews", converter="smartcampus.services.communicator.helpers.GetNewsDataConverter")
+	@Service(serviceId="smartcampus.service.unitnnews", methodName="GetOperaNews", converter="eu.trentorise.smartcampus.domain.communicator.helpers.GetNewsDataConverter")
     operation getOperaNews() returns UnitnNews[];
     
 	action notifyNews(data: UnitnNews[]) {
@@ -244,11 +244,11 @@ DomainObject OperaNews {
     }
 }
 DomainObject CiscaNews {
-    @ServiceNotification(serviceId="smartcampus.service.unitnnews", methodName="GetCiscaNews", converter="smartcampus.services.communicator.helpers.UnitnNewsDataConverter")
+    @ServiceNotification(serviceId="smartcampus.service.unitnnews", methodName="GetCiscaNews", converter="eu.trentorise.smartcampus.domain.communicator.helpers.UnitnNewsDataConverter")
     port updateNews(data : UnitnNews[]);
     @Subscription(serviceId="smartcampus.service.unitnnews", methodName="GetCiscaNews")
     operation subscribeCiscaNews();    
-    @Service(serviceId="smartcampus.service.unitnnews", methodName="GetCiscaNews", converter="smartcampus.services.communicator.helpers.GetNewsDataConverter")
+    @Service(serviceId="smartcampus.service.unitnnews", methodName="GetCiscaNews", converter="eu.trentorise.smartcampus.domain.communicator.helpers.GetNewsDataConverter")
     operation getCiscaNews() returns UnitnNews[];
 
 	action notifyNews(data: UnitnNews[]) {
@@ -260,11 +260,11 @@ DomainObject CiscaNews {
     }
 }
 DomainObject UnitnDataNews {
-    @ServiceNotification(serviceId="smartcampus.service.unitnnews", methodName="GetUnitnNews", converter="smartcampus.services.communicator.helpers.UnitnNewsDataConverter")
+    @ServiceNotification(serviceId="smartcampus.service.unitnnews", methodName="GetUnitnNews", converter="eu.trentorise.smartcampus.domain.communicator.helpers.UnitnNewsDataConverter")
     port updateNews(src : String, data : UnitnNews[]);   
 	@Subscription(serviceId="smartcampus.service.unitnnews", methodName="GetUnitnNews")
     operation subscribeUnitnNews(baseurl:String,variableurl:String,source:String);
-    @Service(serviceId="smartcampus.service.unitnnews", methodName="GetUnitnNews", converter="smartcampus.services.communicator.helpers.GetNewsDataConverter")
+    @Service(serviceId="smartcampus.service.unitnnews", methodName="GetUnitnNews", converter="eu.trentorise.smartcampus.domain.communicator.helpers.GetNewsDataConverter")
     operation getUnitnNews(baseurl:String,variableurl:String,source:String) returns UnitnNews[];
 
 	action notifyNews(src: String, data: UnitnNews[]) {
@@ -285,11 +285,11 @@ DomainObject UnitnDataNews {
   }
 
 DomainObject DisiNews {
-    @ServiceNotification(serviceId="smartcampus.service.unitnnews", methodName="GetDisiNews", converter="smartcampus.services.communicator.helpers.UnitnNewsDataConverter")
+    @ServiceNotification(serviceId="smartcampus.service.unitnnews", methodName="GetDisiNews", converter="eu.trentorise.smartcampus.domain.communicator.helpers.UnitnNewsDataConverter")
     port updateNews(data : UnitnNews[]);       
     @Subscription(serviceId="smartcampus.service.unitnnews", methodName="GetDisiNews")
     operation subscribeDisiNews();      
-    @Service(serviceId="smartcampus.service.unitnnews", methodName="GetDisiNews", converter="smartcampus.services.communicator.helpers.GetNewsDataConverter")
+    @Service(serviceId="smartcampus.service.unitnnews", methodName="GetDisiNews", converter="eu.trentorise.smartcampus.domain.communicator.helpers.GetNewsDataConverter")
     operation getDisiNews() returns UnitnNews[];       
     
 	action notifyNews(data: UnitnNews[]) {
@@ -326,7 +326,7 @@ DomainType SocialSource implements AbstractSource {
 	@Subscription(serviceId="eu.trentorise.smartcampus.services.social.SocialService", methodName="GetTopicNews")
 	operation subscribeSocial(actorId:String);	
 	
-    @Service(serviceId="eu.trentorise.smartcampus.services.social.SocialService", methodName="GetTopicNews", converter="smartcampus.services.communicator.helpers.SocialDataConverter")
+    @Service(serviceId="eu.trentorise.smartcampus.services.social.SocialService", methodName="GetTopicNews", converter="eu.trentorise.smartcampus.domain.communicator.helpers.SocialDataConverter")
     operation getSocial(actorId:String) returns SocialNews[];	   	
 	
 	@Local(actionName="delete")
@@ -353,7 +353,7 @@ DomainType SocialSource implements AbstractSource {
 
 DomainObject SocialNewsService {
 
-	@ServiceNotification(serviceId="eu.trentorise.smartcampus.services.social.SocialService", methodName="GetTopicNews", converter="smartcampus.services.communicator.helpers.SocialNewsConverter")
+	@ServiceNotification(serviceId="eu.trentorise.smartcampus.services.social.SocialService", methodName="GetTopicNews", converter="eu.trentorise.smartcampus.domain.communicator.helpers.SocialNewsConverter")
 	port updateSocial(data:SocialNews[],socialId: String);		
 }
 

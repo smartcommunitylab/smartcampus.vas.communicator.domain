@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  ******************************************************************************/
-package smartcampus.services.communicator.helpers;
+package eu.trentorise.smartcampus.domain.communicator.helpers;
 
 import it.sayservice.platform.smartplanner.data.message.alerts.Alert;
 import it.sayservice.platform.smartplanner.data.message.alerts.AlertDelay;
@@ -23,9 +23,10 @@ import it.sayservice.platform.smartplanner.data.message.alerts.AlertStrike;
 import java.util.ArrayList;
 import java.util.List;
 
-import smartcampus.services.communicator.beans.EntityObject;
-import smartcampus.services.communicator.beans.Notification;
-import smartcampus.services.communicator.beans.NotificationAuthor;
+import eu.trentorise.smartcampus.domain.communicator.beans.EntityObject;
+import eu.trentorise.smartcampus.domain.communicator.beans.Notification;
+import eu.trentorise.smartcampus.domain.communicator.beans.NotificationAuthor;
+
 
 public class JourneyPlannerHelper {
 

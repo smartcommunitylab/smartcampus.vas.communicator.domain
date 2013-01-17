@@ -13,16 +13,17 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  ******************************************************************************/
-package smartcampus.services.communicator.helpers;
+package eu.trentorise.smartcampus.domain.communicator.helpers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import smartcampus.services.communicator.beans.EntityObject;
-import smartcampus.services.communicator.beans.Notification;
-import smartcampus.services.communicator.beans.NotificationAuthor;
-import smartcampus.services.communicator.beans.SocialNews;
+import eu.trentorise.smartcampus.domain.communicator.beans.EntityObject;
+import eu.trentorise.smartcampus.domain.communicator.beans.Notification;
+import eu.trentorise.smartcampus.domain.communicator.beans.NotificationAuthor;
+import eu.trentorise.smartcampus.domain.communicator.beans.SocialNews;
+
 
 public class SocialHelper {
 	public static int test(String funnelId) {

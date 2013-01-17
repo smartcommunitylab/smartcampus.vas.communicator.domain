@@ -13,54 +13,43 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  ******************************************************************************/
-package smartcampus.services.communicator.beans;
+package eu.trentorise.smartcampus.domain.communicator.beans;
 
-import java.util.Map;
+import java.io.Serializable;
 
-public class EntityObject {
-	private String type;
-	private String id;
-	private Map<String, Object> data;
+import smartcampus.service.unitnnews.data.message.Unitnnews.NewsEntry;
+
+public class UnitnNews implements Serializable {
+
 	private String title;
-	private Long entityId;
-
-	public String getType() {
-		return type;
+	private String content;
+	private String source;
+	
+	public UnitnNews(NewsEntry entry) {
+		this.title = entry.getTitle();
+		this.content = entry.getContent();
+		this.source = entry.getSource();
 	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public Map<String, Object> getData() {
-		return data;
-	}
-
-	public void setData(Map<String, Object> data) {
-		this.data = data;
-	}
-
+	
 	public String getTitle() {
 		return title;
 	}
-
 	public void setTitle(String title) {
 		this.title = title;
 	}
-
-	public Long getEntityId() {
-		return entityId;
+	public String getContent() {
+		return content;
 	}
-
-	public void setEntityId(Long entityId) {
-		this.entityId = entityId;
+	public void setContent(String content) {
+		this.content = content;
 	}
+	public String getSource() {
+		return source;
+	}
+	public void setSource(String source) {
+		this.source = source;
+	}
+	
+	
+	
 }
