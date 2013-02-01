@@ -76,7 +76,7 @@ DomainType AbstractFeed {
 
 DomainObject JourneyPlannerSourceFactory implements AbstractSourceFactory {
 	public immutable var sourceType : String = "JourneyPlanner";
-    public immutable var name : String = "Journey Planner";
+    public immutable var name : String = "ViaggiaTrento";
 
 	@Local(actionName="createDefaultSource")
     operation createDefaultSource(userId:String,userSocialId:String);        
@@ -305,7 +305,7 @@ DomainObject DisiNews {
 
 DomainObject SocialSourceFactory implements AbstractSourceFactory {
 	public immutable var sourceType : String = "Social";
-    public immutable var name : String = "Community Manager";
+    public immutable var name : String = "MyPeople";
    
 	@Local(actionName="createDefaultSource")
     operation createDefaultSource(userId:String,userSocialId:String);    
