@@ -1,0 +1,363 @@
+/*******************************************************************************
+ * Copyright 2012-2013 Trento RISE
+ * 
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ * 
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ ******************************************************************************/
+package eu.trentorise.smartcampus.domain.communicator;
+
+import it.sayservice.platform.compiler.domain.model.annotations.ServiceNotification;
+import it.sayservice.platform.compiler.domain.model.annotations.Service;
+import it.sayservice.platform.compiler.domain.model.annotations.Subscription;
+import it.sayservice.platform.compiler.domain.model.annotations.Local;
+import it.sayservice.platform.compiler.domain.model.annotations.Process;
+
+import it.sayservice.platform.smartplanner.data.message.alerts.Alert;
+import it.sayservice.platform.smartplanner.data.message.alerts.AlertAccident;
+import it.sayservice.platform.smartplanner.data.message.alerts.AlertDelay;
+import it.sayservice.platform.smartplanner.data.message.alerts.AlertParking;
+import it.sayservice.platform.smartplanner.data.message.alerts.AlertStrike;
+
+import eu.trentorise.smartcampus.domain.communicator.beans.ActionDescriptor;
+import eu.trentorise.smartcampus.domain.communicator.beans.Notification;
+import eu.trentorise.smartcampus.domain.communicator.beans.UnitnNews;
+import eu.trentorise.smartcampus.domain.communicator.beans.SocialNews;
+import eu.trentorise.smartcampus.domain.communicator.beans.NewsIds;
+
+import eu.trentorise.smartcampus.domain.communicator.helpers.JourneyPlannerHelper;
+import eu.trentorise.smartcampus.domain.communicator.helpers.UnitnNewsHelper;
+import eu.trentorise.smartcampus.domain.communicator.helpers.SocialHelper;
+
+
+import smartcampus.services.journeyplanner.*;
+
+import smartcampus.service.unitnnews.data.message.Unitnnews;
+
+import java.util.Map;
+
+DomainType AbstractSourceFactory {
+	public immutable var sourceType : String;
+    public immutable var name : String;
+
+    operation createDefaultSource(userId:String,userSocialId:String);
+}
+
+DomainType AbstractSource {
+	port update(userId:String, sourceType: String, notifications: Notification[]);
+
+	public immutable var userId : String;
+	public immutable var userSocialId : String;
+	
+	public immutable var id : String;
+	public immutable var sourceType : String;
+
+    operation delete();
+}
+
+DomainType AbstractFeed {
+	public immutable var id : String;
+	public immutable var name : String;
+	public immutable var description : String;
+	public immutable var sourceType : String;
+
+	port update(sourceType: String, notifications: Notification[]);
+}
+
+// JP
+
+DomainObject JourneyPlannerSourceFactory implements AbstractSourceFactory {
+	public immutable var sourceType : String = "JourneyPlanner";
+    public immutable var name : String = "ViaggiaTrento";
+
+	@Local(actionName="createDefaultSource")
+    operation createDefaultSource(userId:String,userSocialId:String);        
+    
+   action createDefaultSource(userId:String,userSocialId:String) {
+		create JourneyPlannerSource(id:userId + "_" + System.currentTimeMillis(),userId:userId,userSocialId:userSocialId);
+	}		
+}
+
+DomainType JourneyPlannerSource implements AbstractSource {
+
+	public immutable var sourceType : String = "JourneyPlanner";
+
+	@Local(actionName="delete")
+    operation delete();  
+      
+    action notifyAlert(alert:Alert,userId:String,clientId:String, title: String) {
+		notifications : Notification[] = JourneyPlannerHelper.buildNotification(alert,id, clientId, title);
+		if (notifications != null) {
+			publish update(userId,sourceType,notifications);
+		}
+    }
+    
+    action delete() => terminate;
+    
+	subscribe ItineraryObject!alertDelay(userId=this.userId) => notifyAlert(alert,userId,clientId, title);
+	subscribe ItineraryObject!alertStrike(userId=this.userId) =>  notifyAlert(alert,userId,clientId, title);
+	subscribe ItineraryObject!alertParking(userId=this.userId) =>  notifyAlert(alert,userId,clientId, title);	
+	subscribe RecurrentJourneyObject!alertDelay(userId=this.userId) => notifyAlert(alert,userId,clientId, title);
+	subscribe RecurrentJourneyObject!alertStrike(userId=this.userId) =>  notifyAlert(alert,userId,clientId, title);
+	subscribe RecurrentJourneyObject!alertParking(userId=this.userId) =>  notifyAlert(alert,userId,clientId, title);	
+	
+}
+
+// UNITN
+
+DomainObject OperaFeed implements AbstractFeed {
+	public immutable var id : String = "Opera Universitaria";
+	public immutable var name : String = "Opera Universitaria";
+	public immutable var sourceType : String = "Opera Universitaria";
+	public immutable var description : String = "Opera Universitaria";
+	private var newsIds : NewsIds = NewsIds.getInstance();
+	
+    action notifyNews(news:UnitnNews[]) {
+    	notifications : Notification[] = UnitnNewsHelper.buildNotification(news,id,newsIds);
+    	set newsIds = UnitnNewsHelper.updateIds(newsIds, news);
+    	if (notifications != null && count(notifications) > 0) {
+			publish update(sourceType,notifications);
+		}
+    }
+    subscribe OperaNews!updateNews() => notifyNews(data);
+}
+DomainObject CiscaFeed implements AbstractFeed {
+	public immutable var id : String = "Cisca";
+	public immutable var name : String = "Cisca";
+	public immutable var sourceType : String = "Cisca";
+	public immutable var description : String = "Cisca";
+	private var newsIds : NewsIds = NewsIds.getInstance();
+	
+    action notifyNews(news:UnitnNews[]) {
+    	notifications : Notification[] = UnitnNewsHelper.buildNotification(news,id,newsIds);
+    	set newsIds = UnitnNewsHelper.updateIds(newsIds, news);
+    	if (notifications != null && count(notifications) > 0) {
+			publish update(sourceType,notifications);
+		}
+    }
+    subscribe CiscaNews!updateNews() => notifyNews(data);
+}
+DomainObject AteneoFeed implements AbstractFeed {
+	public immutable var id : String = "Ateneo";
+	public immutable var name : String = "Ateneo";
+	public immutable var description : String = "Ateneo";
+    public immutable var sourceType : String = "Ateneo";
+	private var newsIds : NewsIds = NewsIds.getInstance();
+	
+    action notifyNews(news:UnitnNews[]) {
+    	notifications : Notification[] = UnitnNewsHelper.buildNotification(news,id,newsIds);
+    	set newsIds = UnitnNewsHelper.updateIds(newsIds, news);
+    	if (notifications != null && count(notifications) > 0) {
+			publish update(sourceType,notifications);
+		}
+    }
+    subscribe UnitnDataNews!updateNews(src="Ateneo") => notifyNews(data);
+}
+DomainObject ScienceFeed implements AbstractFeed {
+	public immutable var id : String = "Scienze";
+	public immutable var name : String = "Scienze";
+	public immutable var sourceType : String = "Scienze";
+	public immutable var description : String = "Scienze";
+	private var newsIds : NewsIds = NewsIds.getInstance();
+	
+    action notifyNews(news:UnitnNews[]) {
+    	notifications : Notification[] = UnitnNewsHelper.buildNotification(news,id,newsIds);
+    	set newsIds = UnitnNewsHelper.updateIds(newsIds, news);
+    	if (notifications != null && count(notifications) > 0) {
+			publish update(sourceType,notifications);
+		}
+    }
+    subscribe UnitnDataNews!updateNews(src="Scienze") => notifyNews(data);
+}
+DomainObject EngFeed implements AbstractFeed {
+	public immutable var id : String = "Ingegneria";
+	public immutable var name : String = "Ingegneria";
+	public immutable var sourceType : String = "Ingegneria";
+	public immutable var description : String = "Ingegneria";
+	private var newsIds : NewsIds = NewsIds.getInstance();
+	
+    action notifyNews(news:UnitnNews[]) {
+    	notifications : Notification[] = UnitnNewsHelper.buildNotification(news,id,newsIds);
+    	set newsIds = UnitnNewsHelper.updateIds(newsIds, news);
+    	if (notifications != null && count(notifications) > 0) {
+			publish update(sourceType,notifications);
+		}
+    }
+    subscribe UnitnDataNews!updateNews(src="Ingegneria") => notifyNews(data);
+}
+DomainObject UniSportFeed implements AbstractFeed {
+	public immutable var id : String = "UniSport";
+	public immutable var name : String = "UniSport";
+	public immutable var sourceType : String = "UniSport";
+	public immutable var description : String = "UniSport";
+	private var newsIds : NewsIds = NewsIds.getInstance();
+	
+    action notifyNews(news:UnitnNews[]) {
+    	notifications : Notification[] = UnitnNewsHelper.buildNotification(news,id,newsIds);
+    	set newsIds = UnitnNewsHelper.updateIds(newsIds, news);
+    	if (notifications != null && count(notifications) > 0) {
+			publish update(sourceType,notifications);
+		}
+    }
+    subscribe UnitnDataNews!updateNews(src="Unisport") => notifyNews(data);
+}
+
+DomainObject DisiFeed implements AbstractFeed {
+	public immutable var id : String = "DISI";
+	public immutable var name : String = "DISI";
+	public immutable var sourceType : String = "DISI";
+	public immutable var description : String = "DISI";
+	private var newsIds : NewsIds = NewsIds.getInstance();
+	
+    action notifyNews(news:UnitnNews[]) {
+    	notifications : Notification[] = UnitnNewsHelper.buildNotification(news,id,newsIds);
+    	set newsIds = UnitnNewsHelper.updateIds(newsIds, news);
+    	if (notifications != null && count(notifications) > 0) {
+			publish update(sourceType,notifications);
+		}
+    }
+    subscribe DisiNews!updateNews() => notifyNews(data);
+}
+
+DomainObject OperaNews {
+    @ServiceNotification(serviceId="smartcampus.service.unitnnews", methodName="GetOperaNews", converter="eu.trentorise.smartcampus.domain.communicator.helpers.UnitnNewsDataConverter")
+    port updateNews(data : UnitnNews[]);
+    @Subscription(serviceId="smartcampus.service.unitnnews", methodName="GetOperaNews")
+    operation subscribeOperaNews();
+	@Service(serviceId="smartcampus.service.unitnnews", methodName="GetOperaNews", converter="eu.trentorise.smartcampus.domain.communicator.helpers.GetNewsDataConverter")
+    operation getOperaNews() returns UnitnNews[];
+    
+	action notifyNews(data: UnitnNews[]) {
+		publish updateNews(data);
+	}
+    action initialize() {
+        invoke subscribeOperaNews();
+        invoke data:getOperaNews() => notifyNews(data);
+    }
+}
+DomainObject CiscaNews {
+    @ServiceNotification(serviceId="smartcampus.service.unitnnews", methodName="GetCiscaNews", converter="eu.trentorise.smartcampus.domain.communicator.helpers.UnitnNewsDataConverter")
+    port updateNews(data : UnitnNews[]);
+    @Subscription(serviceId="smartcampus.service.unitnnews", methodName="GetCiscaNews")
+    operation subscribeCiscaNews();    
+    @Service(serviceId="smartcampus.service.unitnnews", methodName="GetCiscaNews", converter="eu.trentorise.smartcampus.domain.communicator.helpers.GetNewsDataConverter")
+    operation getCiscaNews() returns UnitnNews[];
+
+	action notifyNews(data: UnitnNews[]) {
+		publish updateNews(data);
+	}
+    action initialize() {
+        invoke subscribeCiscaNews();
+        invoke data:getCiscaNews() => notifyNews(data);
+    }
+}
+DomainObject UnitnDataNews {
+    @ServiceNotification(serviceId="smartcampus.service.unitnnews", methodName="GetUnitnNews", converter="eu.trentorise.smartcampus.domain.communicator.helpers.UnitnNewsDataConverter")
+    port updateNews(src : String, data : UnitnNews[]);   
+	@Subscription(serviceId="smartcampus.service.unitnnews", methodName="GetUnitnNews")
+    operation subscribeUnitnNews(baseurl:String,variableurl:String,source:String);
+    @Service(serviceId="smartcampus.service.unitnnews", methodName="GetUnitnNews", converter="eu.trentorise.smartcampus.domain.communicator.helpers.GetNewsDataConverter")
+    operation getUnitnNews(baseurl:String,variableurl:String,source:String) returns UnitnNews[];
+
+	action notifyNews(src: String, data: UnitnNews[]) {
+		publish updateNews(src, data);
+	}
+
+    action initialize() {
+        invoke subscribeUnitnNews("http://www.unitn.it","ateneo","Ateneo");
+        invoke subscribeUnitnNews("http://www.unitn.it","scienze","Scienze");
+        invoke subscribeUnitnNews("http://www.unitn.it","ingegneria","Ingegneria");
+        invoke subscribeUnitnNews("http://www.unisport.tn.it","","Unisport");
+
+        invoke data:getUnitnNews("http://www.unitn.it","ateneo","Ateneo") => notifyNews("Ateneo",data);
+        invoke data:getUnitnNews("http://www.unitn.it","scienze","Scienze") => notifyNews("Scienze",data);
+        invoke data:getUnitnNews("http://www.unitn.it","ingegneria","Ingegneria") => notifyNews("Ingegneria",data);
+        invoke data:getUnitnNews("http://www.unisport.tn.it","","Unisport") => notifyNews("Unisport",data);
+    }
+  }
+
+DomainObject DisiNews {
+    @ServiceNotification(serviceId="smartcampus.service.unitnnews", methodName="GetDisiNews", converter="eu.trentorise.smartcampus.domain.communicator.helpers.UnitnNewsDataConverter")
+    port updateNews(data : UnitnNews[]);       
+    @Subscription(serviceId="smartcampus.service.unitnnews", methodName="GetDisiNews")
+    operation subscribeDisiNews();      
+    @Service(serviceId="smartcampus.service.unitnnews", methodName="GetDisiNews", converter="eu.trentorise.smartcampus.domain.communicator.helpers.GetNewsDataConverter")
+    operation getDisiNews() returns UnitnNews[];       
+    
+	action notifyNews(data: UnitnNews[]) {
+		publish updateNews(data);
+	}
+    action initialize() {
+        invoke subscribeDisiNews();               
+        invoke data:getDisiNews() => notifyNews(data);  
+    }
+}
+
+// SOCIAL
+
+DomainObject SocialSourceFactory implements AbstractSourceFactory {
+	public immutable var sourceType : String = "Social";
+    public immutable var name : String = "MyPeople";
+   
+	@Local(actionName="createDefaultSource")
+    operation createDefaultSource(userId:String,userSocialId:String);    
+    
+	
+   action createDefaultSource(userId:String,userSocialId:String) {
+		create SocialSource(id:userId + "_" + System.currentTimeMillis(),userId:userId,userSocialId:userSocialId);
+	}		
+	
+	
+}
+
+DomainType SocialSource implements AbstractSource {
+	public immutable var sourceType : String = "Social";
+	
+	private var socialIds : String[];
+	
+	@Subscription(serviceId="eu.trentorise.smartcampus.services.social.SocialService", methodName="GetTopicNews")
+	operation subscribeSocial(actorId:String);	
+	
+    @Service(serviceId="eu.trentorise.smartcampus.services.social.SocialService", methodName="GetTopicNews", converter="eu.trentorise.smartcampus.domain.communicator.helpers.SocialDataConverter")
+    operation getSocial(actorId:String) returns SocialNews[];	   	
+	
+	@Local(actionName="delete")
+    operation delete();  
+    
+    subscribe SocialNewsService!updateSocial(socialId = userSocialId) => notifySocial(data);
+
+    action notifySocial(news:SocialNews[]) {
+    	notifications : Notification[] = SocialHelper.buildNotification(news,id,socialIds);
+    	set socialIds = SocialHelper.updateIds(socialIds, news);
+    	if (notifications != null) {
+			publish update(userId,sourceType,notifications);
+		}
+    }
+    
+    action delete() => terminate;    
+
+	action initialize() {
+		socialId : String = "" + userSocialId;
+		invoke data:getSocial(socialId) => notifySocial(data);
+		invoke subscribeSocial(socialId);
+	}
+}
+
+DomainObject SocialNewsService {
+
+	@ServiceNotification(serviceId="eu.trentorise.smartcampus.services.social.SocialService", methodName="GetTopicNews", converter="eu.trentorise.smartcampus.domain.communicator.helpers.SocialNewsConverter")
+	port updateSocial(data:SocialNews[],socialId: String);		
+}
+
+
+
+
+
