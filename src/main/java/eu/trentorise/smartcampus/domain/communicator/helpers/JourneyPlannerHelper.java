@@ -22,11 +22,12 @@ import it.sayservice.platform.smartplanner.data.message.alerts.AlertStrike;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import eu.trentorise.smartcampus.domain.communicator.beans.EntityObject;
 import eu.trentorise.smartcampus.domain.communicator.beans.Notification;
 import eu.trentorise.smartcampus.domain.communicator.beans.NotificationAuthor;
-
 
 public class JourneyPlannerHelper {
 
@@ -54,7 +55,7 @@ public class JourneyPlannerHelper {
 
 	private static Notification buildNotification(Alert alert, String funnelId, String title, String clientId, String name) {
 		Notification not = new Notification();
-		not.setTitle(title + " Alert for journey '"+name+"'");
+		not.setTitle(title + " Alert for journey '" + name + "'");
 		not.setDescription(alert.getNote());
 
 		List<EntityObject> eos = new ArrayList<EntityObject>();
@@ -65,12 +66,41 @@ public class JourneyPlannerHelper {
 		eos.add(eo);
 
 		not.setEntities(eos);
+		
+		Map<String, Object> content = buildContent(alert);
+		not.setContent(content);
 
 		NotificationAuthor author = new NotificationAuthor();
 		author.setName("Journey Planner - " + title);
 		not.setAuthor(author);
 
 		return not;
+	}
+
+	private static Map<String, Object> buildContent(Alert alert) {
+		Map<String, Object> content = new TreeMap<String, Object>();
+		if (alert instanceof AlertDelay) {
+			content.put("type", "alertDelay");
+			content.put("agencyId", ((AlertDelay) alert).getTransport().getAgencyId());
+			content.put("routeId", ((AlertDelay) alert).getTransport().getRouteId());
+			content.put("tripd", ((AlertDelay) alert).getTransport().getTripId());
+			content.put("delay", ((AlertDelay) alert).getDelay());
+		} else if (alert instanceof AlertStrike) {
+			content.put("type", "alertStrike");
+			content.put("agencyId", ((AlertStrike) alert).getTransport().getAgencyId());
+			content.put("routeId", ((AlertStrike) alert).getTransport().getRouteId());
+			content.put("tripd", ((AlertStrike) alert).getTransport().getTripId());
+			content.put("stopId", ((AlertStrike) alert).getStop().getId());
+		} else if (alert instanceof AlertParking) {
+			content.put("type", "alertParking");
+			content.put("agencyId", ((AlertParking) alert).getPlace().getAgencyId());
+			content.put("stopId", ((AlertParking) alert).getPlace().getId());
+			content.put("placesAvailable", ((AlertParking) alert).getPlacesAvailable());
+		}
+		content.put("from", alert.getFrom());
+		content.put("to", alert.getTo());
+
+		return content;
 	}
 
 }
