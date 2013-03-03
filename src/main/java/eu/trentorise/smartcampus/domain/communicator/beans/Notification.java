@@ -16,12 +16,14 @@
 package eu.trentorise.smartcampus.domain.communicator.beans;
 
 import java.util.List;
+import java.util.Map;
 
 public class Notification {
 
 	public String title;
 	public String description;
 	public long timestamp;
+	private Map<String, Object> content;
 	private List<EntityObject> entities;
 	private NotificationAuthor author;
 	
@@ -51,6 +53,14 @@ public class Notification {
 
 	public void setTimestamp(long timestamp) {
 		this.timestamp = timestamp;
+	}
+
+	public Map<String, Object> getContent() {
+		return content;
+	}
+
+	public void setContent(Map<String, Object> content) {
+		this.content = content;
 	}
 
 	public List<EntityObject> getEntities() {

@@ -60,7 +60,7 @@ public class SocialNewsConverter implements DataConverter {
 		}
 
 		res.put("data", list.toArray(new SocialNews[list.size()]));
-		res.put("socialId", ""+nl.getSocialId());
+		res.put("socialId", ""+(nl == null ? "" : nl.getSocialId()));
 		return res;
 		
 	}
