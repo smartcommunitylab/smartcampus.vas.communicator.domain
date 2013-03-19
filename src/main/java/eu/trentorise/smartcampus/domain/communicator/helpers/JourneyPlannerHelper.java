@@ -83,12 +83,14 @@ public class JourneyPlannerHelper {
 			content.put("type", "alertDelay");
 			content.put("agencyId", ((AlertDelay) alert).getTransport().getAgencyId());
 			content.put("routeId", ((AlertDelay) alert).getTransport().getRouteId());
+			content.put("routeShortName", ((AlertDelay) alert).getTransport().getRouteShortName());
 			content.put("tripd", ((AlertDelay) alert).getTransport().getTripId());
 			content.put("delay", ((AlertDelay) alert).getDelay());
 		} else if (alert instanceof AlertStrike) {
 			content.put("type", "alertStrike");
 			content.put("agencyId", ((AlertStrike) alert).getTransport().getAgencyId());
 			content.put("routeId", ((AlertStrike) alert).getTransport().getRouteId());
+			content.put("routeShortName", ((AlertStrike) alert).getTransport().getRouteShortName());
 			content.put("tripd", ((AlertStrike) alert).getTransport().getTripId());
 			content.put("stopId", ((AlertStrike) alert).getStop().getId());
 		} else if (alert instanceof AlertParking) {
