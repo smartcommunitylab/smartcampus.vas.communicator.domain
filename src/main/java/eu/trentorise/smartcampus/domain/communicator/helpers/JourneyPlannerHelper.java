@@ -55,7 +55,8 @@ public class JourneyPlannerHelper {
 
 	private static Notification buildNotification(Alert alert, String funnelId, String title, String clientId, String name) {
 		Notification not = new Notification();
-		not.setTitle(title + " Alert for journey '" + name + "'");
+//		not.setTitle(title + " Alert for journey '" + name + "'");
+		not.setTitle(name);
 		not.setDescription(alert.getNote());
 
 		List<EntityObject> eos = new ArrayList<EntityObject>();
@@ -83,13 +84,20 @@ public class JourneyPlannerHelper {
 			content.put("type", "alertDelay");
 			content.put("agencyId", ((AlertDelay) alert).getTransport().getAgencyId());
 			content.put("routeId", ((AlertDelay) alert).getTransport().getRouteId());
-			content.put("tripd", ((AlertDelay) alert).getTransport().getTripId());
+			content.put("routeShortName", ((AlertDelay) alert).getTransport().getRouteShortName());
+			content.put("tripId", ((AlertDelay) alert).getTransport().getTripId());
 			content.put("delay", ((AlertDelay) alert).getDelay());
+			if (((AlertDelay) alert).getPosition() != null) {
+				content.put("station", ((AlertDelay) alert).getPosition().getName());
+			}
+			// USE NOTE AS DIRECTION
+			content.put("direction", alert.getNote());
 		} else if (alert instanceof AlertStrike) {
 			content.put("type", "alertStrike");
 			content.put("agencyId", ((AlertStrike) alert).getTransport().getAgencyId());
 			content.put("routeId", ((AlertStrike) alert).getTransport().getRouteId());
-			content.put("tripd", ((AlertStrike) alert).getTransport().getTripId());
+			content.put("routeShortName", ((AlertStrike) alert).getTransport().getRouteShortName());
+			content.put("tripId", ((AlertStrike) alert).getTransport().getTripId());
 			content.put("stopId", ((AlertStrike) alert).getStop().getId());
 		} else if (alert instanceof AlertParking) {
 			content.put("type", "alertParking");
@@ -97,6 +105,7 @@ public class JourneyPlannerHelper {
 			content.put("stopId", ((AlertParking) alert).getPlace().getId());
 			content.put("placesAvailable", ((AlertParking) alert).getPlacesAvailable());
 		}
+		content.put("creatorType", alert.getCreatorType().toString());
 		content.put("from", alert.getFrom());
 		content.put("to", alert.getTo());
 
