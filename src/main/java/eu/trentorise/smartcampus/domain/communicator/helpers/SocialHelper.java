@@ -17,6 +17,7 @@ package eu.trentorise.smartcampus.domain.communicator.helpers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import eu.trentorise.smartcampus.domain.communicator.beans.EntityObject;
@@ -26,6 +27,10 @@ import eu.trentorise.smartcampus.domain.communicator.beans.SocialNews;
 
 
 public class SocialHelper {
+	private static final String CONTENT_TOPIC = "topic";
+	private static final String CONTENT_TOPIC_ID = "topicId";
+	private static final String CONTENT_UPDATED = "updated";
+
 	public static int test(String funnelId) {
 		return 0;
 	}
@@ -99,11 +104,14 @@ public class SocialHelper {
 	private static Notification buildNotification(SocialNews sn, String funnelId) {
 		Notification not = new Notification();
 		not.setTitle(sn.getTitle());
-//		not.setDescription("New content for " + sn.getTopicName() + ": " + sn.getEntityType() + " " + sn.getTitle() + ".");
-		String description =  "News for topic '" + sn.getTopicName() + "': ";
 
+		not.setContent(new HashMap<String, Object>());
+		not.getContent().put(CONTENT_TOPIC, sn.getTopicName());
+		not.getContent().put(CONTENT_TOPIC_ID, sn.getTopicId());
+		not.getContent().put(CONTENT_UPDATED, sn.isUpdate());
 		List<EntityObject> eos = new ArrayList<EntityObject>();
 
+		String description =  "News for topic '" + sn.getTopicName() + "': ";
 		if (sn.getRelatedId() != null) {
 			EntityObject eo = new EntityObject();
 			eo.setEntityId(sn.getRelatedId());
