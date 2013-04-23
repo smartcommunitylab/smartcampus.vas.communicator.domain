@@ -30,6 +30,8 @@ import eu.trentorise.smartcampus.domain.communicator.beans.Notification;
 import eu.trentorise.smartcampus.domain.communicator.beans.NotificationAuthor;
 
 public class JourneyPlannerHelper {
+	
+	private static final long DELTA_DELAY = 1000 * 60 * 5;
 
 	public static Notification[] buildNotification(Alert alert, String funnelId, String clientId, String name) {
 		List<Notification> result = new ArrayList<Notification>();
@@ -110,6 +112,47 @@ public class JourneyPlannerHelper {
 		content.put("to", alert.getTo());
 
 		return content;
+	}
+	
+	public static boolean checkAlertsData(AlertsSent sent, Alert alert) {
+		String id = buildId(alert);
+		Long value = null;
+		long threshold = 0;
+		if (alert instanceof AlertDelay) {
+			value = ((AlertDelay) alert).getDelay();
+			threshold = DELTA_DELAY;
+			return sent.check(id, value, threshold);
+		} else if (alert instanceof AlertParking) {
+			return false;  // TBD
+		}
+		
+		return false;
+	}
+	
+	public static AlertsSent updateAlertsData(AlertsSent sent, Alert alert) {
+		String id = buildId(alert);
+		Long value = null;
+		if (alert instanceof AlertDelay) {
+			value = ((AlertDelay) alert).getDelay();
+		} else if (alert instanceof AlertParking) {
+			value = (long)((AlertParking) alert).getPlacesAvailable();
+		}
+		
+		sent.add(id, value);
+		return sent;
+	}	
+	
+	private static String buildId(Alert alert) {
+		String s = null;
+		if (alert instanceof AlertDelay) {
+			s = "AD_" + ((AlertDelay) alert).getTransport().getAgencyId() + "_" + ((AlertDelay) alert).getTransport().getRouteId() + "_" + ((AlertDelay) alert).getTransport().getTripId();
+		} else if (alert instanceof AlertStrike) {
+			s = "AD_" + ((AlertStrike) alert).getTransport().getAgencyId() + "_" + ((AlertStrike) alert).getTransport().getRouteId() + "_" + ((AlertStrike) alert).getTransport().getTripId();
+		} else if (alert instanceof AlertParking) {
+			s = "AP_" + ((AlertParking) alert).getPlace().getAgencyId() + "_" + ((AlertParking) alert).getPlace().getId();
+		}
+		
+		return s;
 	}
 
 }
