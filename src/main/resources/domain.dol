@@ -36,6 +36,7 @@ import eu.trentorise.smartcampus.domain.communicator.beans.NewsIds;
 import eu.trentorise.smartcampus.domain.communicator.helpers.JourneyPlannerHelper;
 import eu.trentorise.smartcampus.domain.communicator.helpers.UnitnNewsHelper;
 import eu.trentorise.smartcampus.domain.communicator.helpers.SocialHelper;
+import eu.trentorise.smartcampus.domain.communicator.helpers.AlertsSent;
 
 
 import smartcampus.services.journeyplanner.*;
@@ -89,18 +90,27 @@ DomainObject JourneyPlannerSourceFactory implements AbstractSourceFactory {
 DomainType JourneyPlannerSource implements AbstractSource {
 
 	public immutable var sourceType : String = "JourneyPlanner";
+	
+	public var sent : AlertsSent;
 
 	@Local(actionName="delete")
     operation delete();  
       
     action notifyAlert(alert:Alert,userId:String,clientId:String, title: String) {
-		notifications : Notification[] = JourneyPlannerHelper.buildNotification(alert,id, clientId, title);
-		if (notifications != null) {
-			publish update(userId,sourceType,notifications);
+    	if (JourneyPlannerHelper.checkAlertsData(sent, alert)) {
+			notifications : Notification[] = JourneyPlannerHelper.buildNotification(alert,id, clientId, title);
+			if (notifications != null) {
+				publish update(userId,sourceType,notifications);
+			}
+			set sent = JourneyPlannerHelper.updateAlertsData(sent,alert);
 		}
     }
     
     action delete() => terminate;
+    
+	action initialize() {
+		set sent = AlertsSent.getInstance();
+	}    
     
 	subscribe ItineraryObject!alertDelay(userId=this.userId) => notifyAlert(alert,userId,clientId, title);
 	subscribe ItineraryObject!alertStrike(userId=this.userId) =>  notifyAlert(alert,userId,clientId, title);
