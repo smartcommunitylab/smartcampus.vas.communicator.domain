@@ -121,6 +121,7 @@ public class JourneyPlannerHelper {
 		if (alert instanceof AlertDelay) {
 			value = ((AlertDelay) alert).getDelay();
 			threshold = DELTA_DELAY;
+			if (sent == null) sent = AlertsSent.getInstance();
 			return sent.check(id, value, threshold);
 		} else if (alert instanceof AlertParking) {
 			return false;  // TBD
@@ -137,7 +138,7 @@ public class JourneyPlannerHelper {
 		} else if (alert instanceof AlertParking) {
 			value = (long)((AlertParking) alert).getPlacesAvailable();
 		}
-		
+		if (sent == null) sent = AlertsSent.getInstance();
 		sent.add(id, value);
 		return sent;
 	}	
