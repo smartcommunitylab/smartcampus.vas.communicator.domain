@@ -24,7 +24,6 @@ import eu.trentorise.smartcampus.domain.communicator.beans.NotificationAuthor;
 import eu.trentorise.smartcampus.domain.communicator.beans.UnitnNews;
 import eu.trentorise.smartcampus.domain.communicator.beans.UnitnNewsParameters;
 
-
 public class UnitnNewsHelper {
 
 	public static int test(String funnelId) {
@@ -47,55 +46,19 @@ public class UnitnNewsHelper {
 
 			for (UnitnNews un : news) {
 				String id = buildId(un);
-//				String title = un.getTitle().toLowerCase();
 				if (ids.contains(id)) {
 					continue;
 				}
 
-//				boolean found = false;
-//				if (pars.getSources() != null && pars.getSources().size() != 0) {
-//					for (String source : pars.getSources()) {
-//						if (un.getSource().equals(source)) {
-//							found = true;
-//							break;
-//						}
-//					}
-//				} else {
-//					found = true;
-//				}
-//				
-//				if (!found) {
-//					continue;
-//				}
-//				
-//				String content = un.getContent().toLowerCase();
-//				found = false;
-//				if (pars.getKeywords() != null && pars.getKeywords().size() != 0) {
-//					for (String keyword : pars.getKeywords()) {
-//						String k = keyword.toLowerCase();
-//						String text = (" " + title + " " + content + " ").toLowerCase();
-//						if (text.matches(".*[\\p{Punct}\\p{Blank}]" + k + "[\\p{Punct}\\p{Blank}].*")) {
-//							found = true;
-//							break;
-//						}
-//					}
-//				} else {
-//					found = true;
-//				}
-//				if (found) {
-					Notification not = buildNotification(un, funnelId);
-					result.add(not);
-//				}
+				Notification not = buildNotification(un, funnelId);
+				result.add(not);
 			}
 		}
-		
-//		System.out.println("UNI NEWS: " + news.length);
-//		System.out.println("NOT: " + result.size());
 
-		return (result.size() == 0)?null:result.toArray(new Notification[result.size()]);
+		return (result.size() == 0) ? null : result.toArray(new Notification[result.size()]);
 	}
 
-	public static NewsIds updateIds(NewsIds newsIds, UnitnNews news[]) {
+	public static NewsIds updateIds(NewsIds newsIds, UnitnNews news[], boolean deleteOlds) {
 		List<String> nid = new ArrayList<String>();
 		for (UnitnNews n : news) {
 			nid.add(buildId(n));
@@ -122,23 +85,19 @@ public class UnitnNewsHelper {
 			}
 		}
 
-		for (String o : oid) {
-			if (!nid.contains(o)) {
-				toDelete.add(o);
+		if (deleteOlds) {
+			for (String o : oid) {
+				if (!nid.contains(o)) {
+					toDelete.add(o);
+				}
 			}
+			oid.removeAll(toDelete);
 		}
 
-//		System.out.println("TD: " + toDelete.size());
-//		System.out.println("TA: " + toAdd.size());
-//		System.out.println("Oold: " + oid.size());
-
-		oid.removeAll(toDelete);
 		oid.addAll(toAdd);
 
-//		System.out.println("Onew: " + oid.size());
-
 		newsIds.setValues(type, oid);
-		
+
 		return newsIds;
 	}
 
@@ -174,12 +133,12 @@ public class UnitnNewsHelper {
 	}
 
 	public static boolean subscribedOpera(UnitnNews news[], UnitnNewsParameters pars) {
-//		String type = extractType(news);
+		// String type = extractType(news);
 		return extractType(news).equals("Opera Universitaria");
 	}
 
 	public static boolean subscribedCisca(UnitnNews news[], UnitnNewsParameters pars) {
-//		String type = extractType(news);
+		// String type = extractType(news);
 		return extractType(news).equals("Cisca");
 	}
 

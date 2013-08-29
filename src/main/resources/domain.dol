@@ -132,7 +132,7 @@ DomainObject OperaFeed implements AbstractFeed {
 	
     action notifyNews(news:UnitnNews[]) {
     	notifications : Notification[] = UnitnNewsHelper.buildNotification(news,id,newsIds);
-    	set newsIds = UnitnNewsHelper.updateIds(newsIds, news);
+    	set newsIds = UnitnNewsHelper.updateIds(newsIds, news, false);
     	if (notifications != null && count(notifications) > 0) {
 			publish update(sourceType,notifications);
 		}
@@ -148,7 +148,7 @@ DomainObject CiscaFeed implements AbstractFeed {
 	
     action notifyNews(news:UnitnNews[]) {
     	notifications : Notification[] = UnitnNewsHelper.buildNotification(news,id,newsIds);
-    	set newsIds = UnitnNewsHelper.updateIds(newsIds, news);
+    	set newsIds = UnitnNewsHelper.updateIds(newsIds, news, false);
     	if (notifications != null && count(notifications) > 0) {
 			publish update(sourceType,notifications);
 		}
@@ -164,7 +164,7 @@ DomainObject AteneoFeed implements AbstractFeed {
 	
     action notifyNews(news:UnitnNews[]) {
     	notifications : Notification[] = UnitnNewsHelper.buildNotification(news,id,newsIds);
-    	set newsIds = UnitnNewsHelper.updateIds(newsIds, news);
+    	set newsIds = UnitnNewsHelper.updateIds(newsIds, news, false);
     	if (notifications != null && count(notifications) > 0) {
 			publish update(sourceType,notifications);
 		}
@@ -180,7 +180,7 @@ DomainObject ScienceFeed implements AbstractFeed {
 	
     action notifyNews(news:UnitnNews[]) {
     	notifications : Notification[] = UnitnNewsHelper.buildNotification(news,id,newsIds);
-    	set newsIds = UnitnNewsHelper.updateIds(newsIds, news);
+    	set newsIds = UnitnNewsHelper.updateIds(newsIds, news, false);
     	if (notifications != null && count(notifications) > 0) {
 			publish update(sourceType,notifications);
 		}
@@ -196,7 +196,7 @@ DomainObject EngFeed implements AbstractFeed {
 	
     action notifyNews(news:UnitnNews[]) {
     	notifications : Notification[] = UnitnNewsHelper.buildNotification(news,id,newsIds);
-    	set newsIds = UnitnNewsHelper.updateIds(newsIds, news);
+    	set newsIds = UnitnNewsHelper.updateIds(newsIds, news, false);
     	if (notifications != null && count(notifications) > 0) {
 			publish update(sourceType,notifications);
 		}
@@ -212,7 +212,7 @@ DomainObject UniSportFeed implements AbstractFeed {
 	
     action notifyNews(news:UnitnNews[]) {
     	notifications : Notification[] = UnitnNewsHelper.buildNotification(news,id,newsIds);
-    	set newsIds = UnitnNewsHelper.updateIds(newsIds, news);
+    	set newsIds = UnitnNewsHelper.updateIds(newsIds, news, false);
     	if (notifications != null && count(notifications) > 0) {
 			publish update(sourceType,notifications);
 		}
@@ -229,7 +229,7 @@ DomainObject DisiFeed implements AbstractFeed {
 	
     action notifyNews(news:UnitnNews[]) {
     	notifications : Notification[] = UnitnNewsHelper.buildNotification(news,id,newsIds);
-    	set newsIds = UnitnNewsHelper.updateIds(newsIds, news);
+    	set newsIds = UnitnNewsHelper.updateIds(newsIds, news, false);
     	if (notifications != null && count(notifications) > 0) {
 			publish update(sourceType,notifications);
 		}
