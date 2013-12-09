@@ -19,25 +19,24 @@ import it.sayservice.platform.client.ServiceBusAdminClient;
 import it.sayservice.platform.client.ServiceBusClient;
 import it.sayservice.platform.client.jms.JMSServiceBusAdminClient;
 import it.sayservice.platform.client.jms.JMSServiceBusClient;
-import it.sayservice.platform.core.domain.DomainObject;
 import it.sayservice.platform.core.message.Core.DODataRequest;
 import it.sayservice.platform.core.message.Core.DomainEvent;
 import it.sayservice.platform.domain.test.DomainListener;
 import it.sayservice.platform.domain.test.DomainTestHelper;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.hornetq.api.core.TransportConfiguration;
 import org.hornetq.jms.client.HornetQJMSConnectionFactory;
 
 import eu.trentorise.smartcampus.domain.communicator.AbstractFeedDOEngine;
 import eu.trentorise.smartcampus.domain.communicator.AbstractSourceDOEngine;
-import eu.trentorise.smartcampus.domain.communicator.JourneyPlannerSourceDOEngine;
-import eu.trentorise.smartcampus.domain.communicator.JourneyPlannerSourceFactoryDOEngine;
-import eu.trentorise.smartcampus.domain.communicator.SocialNewsServiceDOEngine;
-import eu.trentorise.smartcampus.domain.communicator.SocialSourceDOEngine;
+import eu.trentorise.smartcampus.domain.communicator.CiscaFeedDOEngine;
+import eu.trentorise.smartcampus.domain.communicator.CiscaNewsDOEngine;
+import eu.trentorise.smartcampus.domain.communicator.OperaFeedDOEngine;
+import eu.trentorise.smartcampus.domain.communicator.OperaNewsDOEngine;
+import eu.trentorise.smartcampus.domain.communicator.UnitnDataNewsDOEngine;
+import eu.trentorise.smartcampus.domain.communicator.UnitnFeedDOEngine;
 
 
 
@@ -67,21 +66,14 @@ public class TestDomain {
 				helper.start(
 						  new AbstractFeedDOEngine(),
 						  new AbstractSourceDOEngine(),
-						  new JourneyPlannerSourceDOEngine(),
-						  new JourneyPlannerSourceFactoryDOEngine(),
-						  new SocialSourceDOEngine(),
-						  new SocialSourceDOEngine(),
-						  new SocialNewsServiceDOEngine()
+						  new CiscaFeedDOEngine(),
+						  new CiscaNewsDOEngine(),
+						  new OperaFeedDOEngine(),
+						  new OperaNewsDOEngine(),
+						  new UnitnDataNewsDOEngine(),
+						  new UnitnFeedDOEngine()
 				);
 
-				DomainObject o = helper.getDOById("eu.trentorise.smartcampus.domain.communicator.SocialSourceFactory", "eu.trentorise.smartcampus.domain.communicator.SocialSourceFactory.0");
-				Map<String, Object> params = new HashMap<String, Object>();
-				params.put("userId", "37");
-				params.put("userSocialId", "396");
-				helper.invokeDOOperation(o.getType(), o.getId(), "createDefaultSource", params );
-
-				adminClient.restartService("eu.trentorise.smartcampus.services.social.SocialService", "GetTopicNews");
-				
 				System.err.println();
 	}
 

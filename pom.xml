@@ -14,14 +14,6 @@
 	<dependencies>
 
 		<dependency>
-			<groupId>smartcampus</groupId>
-			<artifactId>smartcampus.vas.journeyplanner.domain</artifactId>
-			<version>1.0</version>
-			<type>bundle</type>
-			<scope>compile</scope>
-		</dependency>
-
-		<dependency>
 			<groupId>it.sayservice.platform</groupId>
 			<artifactId>service-engine-client</artifactId>
 			<version>${service-engine-client}</version>

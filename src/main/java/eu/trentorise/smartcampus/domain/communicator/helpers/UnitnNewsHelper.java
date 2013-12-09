@@ -16,6 +16,7 @@
 package eu.trentorise.smartcampus.domain.communicator.helpers;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import eu.trentorise.smartcampus.domain.communicator.beans.NewsIds;
@@ -30,7 +31,7 @@ public class UnitnNewsHelper {
 		return 0;
 	}
 
-	public static Notification[] buildNotification(UnitnNews news[], String funnelId, NewsIds newsIds) {
+	public static Notification[] buildNotification(UnitnNews news[], String source, NewsIds newsIds) {
 		List<Notification> result = new ArrayList<Notification>();
 
 		String type = extractType(news);
@@ -50,7 +51,7 @@ public class UnitnNewsHelper {
 					continue;
 				}
 
-				Notification not = buildNotification(un, funnelId);
+				Notification not = buildNotification(un, source);
 				result.add(not);
 			}
 		}
@@ -109,6 +110,9 @@ public class UnitnNewsHelper {
 		Notification not = new Notification();
 		not.setTitle(un.getTitle());
 		not.setDescription(un.getContent());
+		if (un.getLink() != null) {
+			not.setContent(Collections.<String,Object>singletonMap("link", un.getLink()));
+		}
 
 		NotificationAuthor author = new NotificationAuthor();
 		author.setName("Unitn news - " + un.getSource());

@@ -24,11 +24,13 @@ public class UnitnNews implements Serializable {
 	private String title;
 	private String content;
 	private String source;
+	private String link;
 	
 	public UnitnNews(NewsEntry entry) {
 		this.title = entry.getTitle();
 		this.content = entry.getContent();
 		this.source = entry.getSource();
+		if (entry.hasLink()) this.link = entry.getLink(); 
 	}
 	
 	public String getTitle() {
@@ -49,7 +51,13 @@ public class UnitnNews implements Serializable {
 	public void setSource(String source) {
 		this.source = source;
 	}
-	
-	
+
+	public String getLink() {
+		return link;
+	}
+
+	public void setLink(String link) {
+		this.link = link;
+	}
 	
 }
