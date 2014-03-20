@@ -142,7 +142,7 @@ DomainObject UnitnFeed implements AbstractFeed {
     subscribe UnitnDataNews!updateNews(src="giurisprudenza") => notifyNews(data,"Giurisprudenza");
     subscribe UnitnDataNews!updateNews(src="dphys") => notifyNews(data,"Fisica");
     subscribe UnitnDataNews!updateNews(src="dicam") => notifyNews(data,"Ingegneria civile, ambientale e meccanica");
-    subscribe UnitnDataNews!updateNews(src="disi") => notifyNews(data,"Ingegneria e scienza dell’informazione");
+    subscribe UnitnDataNews!updateNews(src="disi") => notifyNews(data,"Ingegneria e scienza dell'informazione");
     subscribe UnitnDataNews!updateNews(src="dii") => notifyNews(data,"Ingegneria industriale");
     subscribe UnitnDataNews!updateNews(src="lettere") => notifyNews(data,"Lettere e filosofia");
     subscribe UnitnDataNews!updateNews(src="dmath") => notifyNews(data,"Matematica");
@@ -172,7 +172,7 @@ DomainObject UnitnDataNews {
         invoke subscribeUnitnNews("http://www.unitn.it","giurisprudenza","Giurisprudenza");
         invoke subscribeUnitnNews("http://www.unitn.it","dphys","Fisica");
         invoke subscribeUnitnNews("http://www.unitn.it","dicam","Ingegneria civile, ambientale e meccanica");
-        invoke subscribeUnitnNews("http://www.unitn.it","disi","Ingegneria e scienza dell’informazione");
+        invoke subscribeUnitnNews("http://www.unitn.it","disi","Ingegneria e scienza dell'informazione");
         invoke subscribeUnitnNews("http://www.unitn.it","dii","Ingegneria industriale");
         invoke subscribeUnitnNews("http://www.unitn.it","lettere","Lettere e filosofia");
         invoke subscribeUnitnNews("http://www.unitn.it","dmath","Matematica");
@@ -187,7 +187,7 @@ DomainObject UnitnDataNews {
         invoke data:getUnitnNews("http://www.unitn.it","giurisprudenza","Giurisprudenza") => notifyNews("giurisprudenza",data);
         invoke data:getUnitnNews("http://www.unitn.it","dphys","Fisica") => notifyNews("dphys",data);
         invoke data:getUnitnNews("http://www.unitn.it","dicam","Ingegneria civile, ambientale e meccanica") => notifyNews("dicam",data);
-        invoke data:getUnitnNews("http://www.unitn.it","disi","Ingegneria e scienza dell’informazione") => notifyNews("disi",data);
+        invoke data:getUnitnNews("http://www.unitn.it","disi","Ingegneria e scienza dell'informazione") => notifyNews("disi",data);
         invoke data:getUnitnNews("http://www.unitn.it","dii","Ingegneria industriale") => notifyNews("dii",data);
         invoke data:getUnitnNews("http://www.unitn.it","lettere","Lettere e filosofia") => notifyNews("lettere",data);
         invoke data:getUnitnNews("http://www.unitn.it","dmath","Matematica") => notifyNews("dmath",data);
